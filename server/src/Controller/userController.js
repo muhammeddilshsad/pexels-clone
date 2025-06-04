@@ -12,7 +12,6 @@ console.log(req.body)
     });
     await user.save();
     res.status(200).json(user)
-    
 }
 
 export const login=async (req,res)=>{

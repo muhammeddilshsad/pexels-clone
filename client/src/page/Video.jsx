@@ -11,7 +11,7 @@ const Videos = () => {
     navigate("/")
   }
 
-  // Sample video data matching the original layout
+ 
   const trendingVideos = [
     {
       id: 1,

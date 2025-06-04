@@ -5,6 +5,7 @@ import Login from './project/login';
 import Home from './page/Home';
 import { Toaster } from 'react-hot-toast'
 import Videos from './page/Video';
+import MasnoryModal from './page/ImageModal';
 
 
 
@@ -16,6 +17,7 @@ function App() {
         <Route path='/Register' element={<Register/>} />
         <Route path='/login' element={<Login />} />
         <Route path='/videos' element={< Videos/>} />
+        <Route path='/ImageModal' element={<MasnoryModal/>}/>
 
       </Routes>
       <Toaster/>

@@ -1,21 +1,52 @@
 
-import React, { useState } from 'react';
-import { Search, ChevronDown, Menu, MoreHorizontal } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Search, ChevronDown, Menu, MoreHorizontal, Download, Heart } from 'lucide-react';
+import MasnoryGrid from './Masnorygrid';
+import { axiosInstance } from '../../axiosInstance';
+import { Navigate, useNavigate } from 'react-router-dom';
+import MasnoryModal from './ImageModal';
+// Mock data based on your sample
+// Masonry Grid Component
+
 
 export default function PexelsHomepage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState('Home');
+  const [image, setImage] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedImage, setSelectedImage] = useState(null);
   const navigate=useNavigate()
 
-  const tabs = ['Home', 'Videos', 'Leaderboard', 'Challenges'];
-  
-  const trendingImages = [
-    'https://images.pexels.com/photos/1587927/pexels-photo-1587927.jpeg?auto=compress&cs=tinysrgb&w=400',
-    'https://images.pexels.com/photos/416978/pexels-photo-416978.jpeg?auto=compress&cs=tinysrgb&w=400',
-    'https://images.pexels.com/photos/1308881/pexels-photo-1308881.jpeg?auto=compress&cs=tinysrgb&w=400',
+  useEffect(() => {
+    fetchImage();
+  }, []);
 
-  ];
+  const handleImageClick = (img) => {
+    setSelectedImage(img);
+  };
+  const handleCloseModal = () => {
+    setSelectedImage(null);
+  };
+
+
+  const fetchImage = async () => {
+    try {
+      setLoading(true);
+      
+      const res= await axiosInstance.get("/image/getAllimage")
+      setImage(res.data);
+      console.log(res.data);
+      
+      setLoading(false)
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+const onclick=()=>{
+  navigate('/register')
+}
+
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -33,28 +64,26 @@ export default function PexelsHomepage() {
             <ChevronDown className="w-4 h-4" />
           </div>
           <span className="cursor-pointer">License</span>
-          <button onClick={()=>navigate("/register")}>login</button>
+          <button onClick={onclick}>Login</button>
           <MoreHorizontal className="w-5 h-5 cursor-pointer" />
           <button className="bg-white text-black px-6 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors">
             Join
           </button>
         </div>
       </header>
-
       {/* Hero Section */}
       <div 
-        className="relative min-h-130  flex flex-col justify-center items-center px-6"
+        className="relative min-h-[500px] flex flex-col justify-center items-center px-6"
         style={{
           backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://images.pexels.com/photos/219692/pexels-photo-219692.jpeg?auto=compress&cs=tinysrgb&w=1200')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundAttachment: 'fixed'
-
         }}
       >
         <div className="text-center max-w-4xl mx-auto mb-12">
-          <h1 className="text-2xl md:text-2xl lg:text-5xl font-bold mb-6 leading-tigh" >
-          The best free stock photos, royalty free images & videos shared by creators.
+          <h1 className="text-2xl md:text-3xl lg:text-5xl font-bold mb-6 leading-tight">
+            The best free stock photos, royalty free images & videos shared by creators.
           </h1>
         </div>
 
@@ -84,32 +113,60 @@ export default function PexelsHomepage() {
 
         {/* Photo Credit */}
         <div className="absolute bottom-4 right-6 text-sm text-white/70">
-         PHOTO BY DILSHAD
+          PHOTO BY DILSHAD
         </div>
       </div>
 
       {/* Navigation Tabs */}
-      <div className="bg-white">
-        <div className="flex justify-center space-x-8 py-4">
-          <button>Videos</button>
-          {tabs.map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-6 py-2 rounded-full font-medium transition-all ${
-                activeTab === tab
-                  ? 'bg-black text-white'
-                  : 'text-gray-600 hover:text-black hover:bg-gray-100'
-              }`}
-            >
-              
-              {tab}
-            </button>
+     <div className="bg-white">
+  <div className="flex justify-center space-x-8 py-4">
+    <button
+      onClick={() => setActiveTab('Home')}
+      className={`px-6 py-2 rounded-full font-medium transition-all ${
+        activeTab === 'Home'
+          ? 'bg-black text-white'
+          : 'text-gray-600 hover:text-black hover:bg-gray-100'
+      }`}
+    >
+      Home
+    </button>
 
-            
-          ))}
-        </div>
-      </div>
+    <button
+      onClick={()=>navigate("/videos")}
+      className={`px-6 py-2 rounded-full font-medium transition-all ${
+        activeTab === 'Videos'
+          ? 'bg-black text-white'
+          : 'text-gray-600 hover:text-black hover:bg-gray-100'
+      }`}
+      
+    >
+      Videos
+    </button>
+
+    <button
+      onClick={() => setActiveTab('Leaderboard')}
+      className={`px-6 py-2 rounded-full font-medium transition-all ${
+        activeTab === 'Leaderboard'
+          ? 'bg-black text-white'
+          : 'text-gray-600 hover:text-black hover:bg-gray-100'
+      }`}
+    >
+      Leaderboard
+    </button>
+
+    <button
+      onClick={() => setActiveTab('Challenges')}
+      className={`px-6 py-2 rounded-full font-medium transition-all ${
+        activeTab === 'Challenges'
+          ? 'bg-black text-white'
+          : 'text-gray-600 hover:text-black hover:bg-gray-100'
+      }`}
+    >
+      Challenges
+    </button>
+  </div>
+</div>
+
 
       {/* Content Section */}
       <div className="bg-white text-black">
@@ -122,56 +179,21 @@ export default function PexelsHomepage() {
             </div>
           </div>
 
-          {/* Image Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Large Featured Image */}
-            <div className="lg:col-span-2 lg:row-span-2">
-              <div className="relative group cursor-pointer overflow-hidden rounded-lg aspect-[4/3] bg-gray-100">
-                <img
-                  src="https://images.pexels.com/photos/30307367/pexels-photo-30307367/free-photo-of-groom-in-tuxedo-sitting-on-luxury-car-in-baghdad.jpeg?auto=compress&cs=tinysrgb&w=1200"
-                  alt="Elegant black and white wedding ceremony"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
-              </div>
+          {/* Loading State */}
+          {loading ? (
+            <div className="flex justify-center items-center py-20">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
             </div>
-
-            {/* Smaller Images */}
-            <div className="space-y-6">
-              <div className="relative group cursor-pointer overflow-hidden rounded-lg aspect-video bg-gray-100">
-                <img
-                  src="https://images.pexels.com/photos/416978/pexels-photo-416978.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=2"
-                  alt="Urban architecture"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
-              </div>
-              
-              <div className="relative group cursor-pointer overflow-hidden rounded-lg aspect-video bg-gray-100">
-                <img
-                  src="https://images.pexels.com/photos/1308881/pexels-photo-1308881.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=2"
-                  alt="City street view"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
-              </div>
-
-
-
-              <div className="relative group cursor-pointer overflow-hidden rounded-lg aspect-video bg-gray-100">
-                <img
-                  src="https://images.pexels.com/photos/16811826/pexels-photo-16811826/free-photo-of-russell-square-tube-station-in-london.jpeg?auto=compress&cs=tinysrgb&w=1200&lazy=load"
-                  alt="City street view"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
-              </div>
-            </div>
-
-          
-          </div>
+          ) : (
+            /* Masonry Image Grid */
+            <MasnoryGrid  images={image} onclick={handleImageClick}/>
+          )}
         </div>
       </div>
+      {selectedImage && (
+  <MasnoryModal image={selectedImage} onClose={handleCloseModal} />
+)}
+
     </div>
   );
 }
