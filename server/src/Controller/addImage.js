@@ -1,9 +1,12 @@
 import Image from "../Model/Image.js";
 
 export const addImage = async (req, res) => {
+  console.log(req);
+  
   try {
-    const { title, description, imageUrl ,photographer} = req.body;
-    const newImage = new Image({ title, description, imageUrl ,photographer});
+    const image= req.file.path
+    const { title, description,photographer} = req.body;
+    const newImage = new Image({ title, description, imageUrl:image ,photographer});
     await newImage.save();
     res.status(201).json({ message: "Image added successfully", image: newImage });
   } catch (error) {

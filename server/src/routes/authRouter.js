@@ -10,8 +10,4 @@ const authRouter=express.Router()
  .post("/login",login)
 
 
-
-
-
-
 export default authRouter
