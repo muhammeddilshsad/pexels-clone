@@ -37,8 +37,7 @@ export const serchImage = createAsyncThunk(
     console.log("qqqqqqqqqq", searchQuery);
 
     try {
-      const response = await axiosInstance.get(
-        `/image/serchImage?query=${searchQuery}`
+      const response = await axiosInstance.get( `/image/serchImage?query=${searchQuery}`
       );
       console.log(response.data);
 

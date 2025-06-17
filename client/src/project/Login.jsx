@@ -4,6 +4,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { axiosInstance } from '../../axiosInstance';
 import { toast } from 'react-hot-toast'; 
 import { GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from 'jwt-decode';
 
 
 const Masonry = ({ children, breakpointCols, className }) => {
@@ -39,17 +40,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate=useNavigate()
   
-  const handleSuccess = (credentialResponse) => {
-    console.log("Credential:", credentialResponse);
-    navigate("/")
-    toast.success("LOGIN SUCCESSFULY")
- 
-  };
-
-  const handleError = () => {
-    console.log("Login Failed");
-  };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -76,7 +67,21 @@ export default function Login() {
 
   };
 
-
+  const handlegoogle = async(credentialResponse) => {
+    try {
+      const decoded = jwtDecode(credentialResponse?.credential);
+      console.log("decode",decoded);
+      const response=await axiosInstance.post("/auth/login",{
+        email:decoded.email,
+        password:decoded.given_name,
+      })
+      const userdata=response.data;
+      localStorage.setItem("user",JSON.stringify(userdata))
+      toast.success("LOGIN SUCCESFULY")
+       } catch (error) {
+      console.log("Google Login Failed:", error);
+    }
+  };
 
   const handleregister=()=>{
    navigate("/register")
@@ -168,7 +173,13 @@ export default function Login() {
         {/* Social Login Buttons */}
         <div className="space-y-3 mb-6">
         <div className="flex items-center justify-center  h-1/2">
-      <GoogleLogin onSuccess={handleSuccess} onError={handleError} />
+      {/* <GoogleLogin onSuccess={handleSuccess} onError={handleError} /> */}
+      <GoogleLogin
+            onSuccess={handlegoogle}
+            onError={() => {
+              console.log("Google Login Failed");
+            }}
+          />
     </div>
            
 

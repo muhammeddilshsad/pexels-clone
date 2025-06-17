@@ -145,7 +145,7 @@ const ImageUpload = () => {
                     onChange={(e) => handleInputChange('title', e.target.value)}
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                   />
-                  <Copy size={16} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+    
                 </div>
               </div>
 
@@ -162,7 +162,7 @@ const ImageUpload = () => {
                     onChange={(e) => handleInputChange('tags', e.target.value)}
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                   />
-                  <Copy size={16} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+
                 </div>
               </div>
 
@@ -179,7 +179,7 @@ const ImageUpload = () => {
                     onChange={(e) => handleInputChange('location', e.target.value)}
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                   />
-                  <Copy size={16} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+
                 </div>
               </div>
 

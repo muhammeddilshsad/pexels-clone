@@ -80,6 +80,23 @@ function Register() {
     navigate("/login");
   };
 
+  const handlegoogle = async(credentialResponse) => {
+    try {
+      const decoded = jwtDecode(credentialResponse?.credential);
+      console.log("decode",decoded);
+      const response = await axiosInstance.post("/auth/register", {
+        name: decoded.name,
+        email: decoded.email,
+        password: decoded.given_name,
+      });
+      console.log(response.data);
+       } catch (error) {
+      console.log("Google Login Failed:", error);
+    }
+    toast.success("REGISTER SUCCESFULY");
+    navigate("/login");
+  };
+
   if (!isModalOpen) {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
@@ -158,8 +175,12 @@ function Register() {
 
         <div className="space-y-3 mb-6">
           <div className="flex items-center justify-center  h-1/2">
-            <GoogleLogin onSuccess={handleSuccess} onError={handleError} />
-          </div>
+          <GoogleLogin
+            onSuccess={handlegoogle}
+            onError={() => {
+              console.log("Google Login Failed");
+            }}
+          />          </div>
           <div className="flex gap-3"></div>
         </div>
 

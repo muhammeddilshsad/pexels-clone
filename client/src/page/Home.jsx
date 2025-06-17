@@ -193,12 +193,16 @@ export default function PexelsHomepage() {
           <button className="bg-white text-black px-6 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors">
             Join
           </button>
-          <button
-            onClick={upload}
-            className="bg-white text-black px-6 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors"
-          >
-            Upload
-          </button>
+          {user ?(
+              <button
+              onClick={upload}
+              className="bg-white text-black px-6 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors"
+            >
+              Upload
+            </button>
+
+          ):null}
+        
         </div>
       </header>
 

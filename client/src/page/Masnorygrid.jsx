@@ -25,10 +25,8 @@ function MasnoryGrid({images,onclick}) {
                 onLoad={(e) => handleImageLoad(image._id, e.target.naturalHeight)}
               />
               
-              {/* Overlay */}
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300" />
               
-              {/* Action buttons - appear on hover */}
               <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex space-x-2">
                 <button className="bg-white/90 hover:bg-white p-2 rounded-lg shadow-md transition-colors">
                   <Heart className="w-4 h-4 text-gray-700" />
@@ -38,7 +36,6 @@ function MasnoryGrid({images,onclick}) {
                 </button>
               </div>
               
-              {/* Image info - appears on hover */}
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <h3 className="text-white font-semibold text-sm mb-1">{image.title}</h3>
                 <p className="text-white/80 text-xs mb-2">{image.description}</p>
