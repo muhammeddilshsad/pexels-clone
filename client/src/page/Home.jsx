@@ -6,6 +6,9 @@ import {
   MoreHorizontal,
   Download,
   Heart,
+  Bell,
+  Instagram,
+  Youtube,
 } from "lucide-react";
 import MasnoryGrid from "./Masnorygrid";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -17,8 +20,14 @@ export default function PexelsHomepage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("Home");
   const [selectedImage, setSelectedImage] = useState(null);
+  const [isLicenseDropdownOpen, setIsLicenseDropdownOpen] = useState(false);
+  const [isLogged, setIsLogged] = useState(false);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const user = JSON.parse(localStorage.getItem("user"));
+  console.log(user);
   const upload = () => {
     navigate("/upload");
   };
@@ -34,6 +43,7 @@ export default function PexelsHomepage() {
   const handleImageClick = (img) => {
     setSelectedImage(img);
   };
+
   const handleCloseModal = () => {
     setSelectedImage(null);
   };
@@ -43,7 +53,7 @@ export default function PexelsHomepage() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black text-white relative">
       <header className="relative z-20 flex items-center justify-between px-6 py-4">
         <div className="flex items-center space-x-8">
           <div className="text-2xl font-bold text-white">pexels</div>
@@ -54,10 +64,132 @@ export default function PexelsHomepage() {
             <span>Explore</span>
             <ChevronDown className="w-4 h-4" />
           </div>
-          <span className="cursor-pointer">License</span>
-          <button onClick={onclick}>Login</button>
-          {/* <MoreHorizontal className="w-5 h-5 cursor-pointer"  /> */}
-          <button className="w-5 h-5 cursor-pointer">...</button>
+
+          <div className="relative">
+            <button className="cursor-pointer hover:opacity-80 transition-opacity">
+              License
+            </button>
+
+            {isLicenseDropdownOpen && (
+              <div className="absolute top-full right-0 mt-2 w-80 bg-white rounded-2xl shadow-lg z-50 overflow-hidden">
+                <div className="py-4">
+                  {user ? (
+                    <button
+                      onClick={() => {
+                        localStorage.clear();
+                        setIsLogged(false);
+                        navigate("/login");
+                      }}
+                      className="w-full px-6 py-4 text-left text-gray-700 hover:bg-gray-50 transition-colors text-base font-medium"
+                      >
+                      Log Out
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => navigate("/login")}
+                      className="w-full px-6 py-4 text-left text-gray-700 hover:bg-gray-50 transition-colors text-base font-medium"
+                      >
+                      Log in
+                    </button>
+                  )}
+
+                  <button
+                    className="w-full px-6 py-4 text-left text-gray-700 hover:bg-gray-50 transition-colors text-base font-medium"
+                    onClick={() => {
+                      console.log("Clicked: Image & Video API");
+                      setIsLicenseDropdownOpen(false);
+                    }}
+                  >
+                    Image & Video API
+                  </button>
+                  <button
+                    className="w-full px-6 py-4 text-left text-gray-700 hover:bg-gray-50 transition-colors text-base font-medium"
+                    onClick={() => {
+                      console.log("Clicked: Apps & Plugins");
+                      setIsLicenseDropdownOpen(false);
+                    }}
+                  >
+                    Apps & Plugins
+                  </button>
+                  <button
+                    className="w-full px-6 py-4 text-left text-gray-700 hover:bg-gray-50 transition-colors text-base font-medium"
+                    onClick={() => {
+                      console.log("Clicked: Help Center");
+                      setIsLicenseDropdownOpen(false);
+                    }}
+                  >
+                    Help Center
+                  </button>
+                  <button
+                    className="w-full px-6 py-4 text-left text-gray-700 hover:bg-gray-50 transition-colors text-base font-medium"
+                    onClick={() => {
+                      console.log("Clicked: Report Content");
+                      setIsLicenseDropdownOpen(false);
+                    }}
+                  >
+                    Report Content
+                  </button>
+                  <button
+                    className="w-full px-6 py-4 text-left text-gray-700 hover:bg-gray-50 transition-colors text-base font-medium"
+                    onClick={() => {
+                      console.log("Clicked: Partnerships");
+                      setIsLicenseDropdownOpen(false);
+                    }}
+                  >
+                    Partnerships
+                  </button>
+                  <button
+                    className="w-full px-6 py-4 text-left text-gray-700 hover:bg-gray-50 transition-colors text-base font-medium"
+                    onClick={() => {
+                      console.log("Clicked: Imprint & Terms");
+                      setIsLicenseDropdownOpen(false);
+                    }}
+                  >
+                    Imprint & Terms
+                  </button>
+
+                  <button className="w-full px-6 py-4 text-left text-gray-700 hover:bg-gray-50 transition-colors text-base font-medium flex items-center gap-3">
+                    <div className="w-6 h-4 bg-red-500 rounded-sm flex items-center justify-center relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-b from-red-500 via-white to-red-500"></div>
+                      <div className="absolute left-0 top-0 w-2 h-full bg-blue-600"></div>
+                      <div className="absolute left-0 top-1 w-4 h-0.5 bg-white transform rotate-12"></div>
+                      <div className="absolute left-0 bottom-1 w-4 h-0.5 bg-white transform -rotate-12"></div>
+                    </div>
+                    Change Language
+                  </button>
+                </div>
+
+                <div className="px-6 py-4 border-t border-gray-100">
+                  <div className="flex items-center gap-4">
+                    <button className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
+                      <Instagram className="w-5 h-5 text-gray-600" />
+                    </button>
+                    <button className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
+                      <div className="w-5 h-5 rounded-full border-2 border-gray-600"></div>
+                    </button>
+                    <button className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
+                      <div className="w-5 h-5 bg-gray-600 rounded-full"></div>
+                    </button>
+                    <button className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
+                      <Youtube className="w-5 h-5 text-gray-600" />
+                    </button>
+                    <button className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
+                      <div className="w-5 h-5 text-gray-600 font-bold italic text-xs">
+                        d
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <button
+            className="w-5 h-5 cursor-pointer"
+            onClick={() => setIsLicenseDropdownOpen(!isLicenseDropdownOpen)}
+          >
+            ...
+          </button>
           <button className="bg-white text-black px-6 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors">
             Join
           </button>
@@ -70,6 +202,13 @@ export default function PexelsHomepage() {
         </div>
       </header>
 
+      {isLicenseDropdownOpen && (
+        <div
+          className="fixed inset-0 z-10"
+          onClick={() => setIsLicenseDropdownOpen(false)}
+        ></div>
+      )}
+
       <div
         className="relative min-h-[500px] flex flex-col justify-center items-center px-6"
         style={{
@@ -80,7 +219,7 @@ export default function PexelsHomepage() {
         }}
       >
         <div className="text-center max-w-4xl mx-auto mb-12">
-          <h1 className="text-2xl md:text-3xl lg:text-5xl font-bold mb-6 leading-tight">
+          <h1 className="text-white text-4xl md:text-5xl font-semibold leading-snug text-center">
             The best free stock photos, royalty free images & videos shared by
             creators.
           </h1>
@@ -103,7 +242,6 @@ export default function PexelsHomepage() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none text-lg"
                 />
-
                 <button
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                   onClick={() => dispatch(serchImage(searchQuery))}
@@ -115,13 +253,11 @@ export default function PexelsHomepage() {
           </div>
         </div>
 
-        {/* Photo Credit */}
         <div className="absolute bottom-4 right-6 text-sm text-white/70">
           PHOTO BY DILSHAD
         </div>
       </div>
 
-      {/* Navigation Tabs */}
       <div className="bg-white">
         <div className="flex justify-center space-x-8 py-4">
           <button
@@ -134,7 +270,6 @@ export default function PexelsHomepage() {
           >
             Home
           </button>
-
           <button
             onClick={() => navigate("/videos")}
             className={`px-6 py-2 rounded-full font-medium transition-all ${
@@ -145,7 +280,6 @@ export default function PexelsHomepage() {
           >
             Videos
           </button>
-
           <button
             onClick={() => setActiveTab("Leaderboard")}
             className={`px-6 py-2 rounded-full font-medium transition-all ${
@@ -156,7 +290,6 @@ export default function PexelsHomepage() {
           >
             Leaderboard
           </button>
-
           <button
             onClick={() => setActiveTab("Challenges")}
             className={`px-6 py-2 rounded-full font-medium transition-all ${
@@ -170,7 +303,6 @@ export default function PexelsHomepage() {
         </div>
       </div>
 
-      {/* Content Section */}
       <div className="bg-white text-black">
         <div className="max-w-7xl mx-auto px-6 py-12">
           <div className="flex justify-between items-center mb-8">
@@ -181,13 +313,11 @@ export default function PexelsHomepage() {
             </div>
           </div>
 
-          {/* Loading State */}
           {loading ? (
             <div className="flex justify-center items-center py-20">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
             </div>
           ) : (
-            /* Masonry Image Grid */
             <MasnoryGrid
               images={serchedImage.length > 0 ? serchedImage : image}
               onclick={handleImageClick}
