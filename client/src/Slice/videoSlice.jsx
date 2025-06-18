@@ -20,7 +20,7 @@ export const getVideos = createAsyncThunk("image/getallvideo", async () => {
 });
 
 
-export const serchVideo=createAsyncThunk("mage/serchVideo",async(serchQuery)=>{
+export const serchVideo=createAsyncThunk("image/serchVideo",async(serchQuery)=>{
     console.log(serchQuery)
     try {
         const respon= await axiosInstance.get(`image/serchVideo?query=${serchQuery}`)
@@ -60,7 +60,7 @@ const videoSlice = createSlice({
     })
     Builder.addCase(serchVideo.fulfilled,(state,action)=>{
         state.loading=false;
-        state.serchVideos=action.payload
+        state.videos=action.payload
     })
     Builder.addCase(serchVideo.rejected,(state,action)=>{
         state.loading=false,

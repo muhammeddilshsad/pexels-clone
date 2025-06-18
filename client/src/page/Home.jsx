@@ -148,15 +148,7 @@ export default function PexelsHomepage() {
                     Imprint & Terms
                   </button>
 
-                  <button className="w-full px-6 py-4 text-left text-gray-700 hover:bg-gray-50 transition-colors text-base font-medium flex items-center gap-3">
-                    <div className="w-6 h-4 bg-red-500 rounded-sm flex items-center justify-center relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-b from-red-500 via-white to-red-500"></div>
-                      <div className="absolute left-0 top-0 w-2 h-full bg-blue-600"></div>
-                      <div className="absolute left-0 top-1 w-4 h-0.5 bg-white transform rotate-12"></div>
-                      <div className="absolute left-0 bottom-1 w-4 h-0.5 bg-white transform -rotate-12"></div>
-                    </div>
-                    Change Language
-                  </button>
+              
                 </div>
 
                 <div className="px-6 py-4 border-t border-gray-100">
@@ -219,7 +211,7 @@ export default function PexelsHomepage() {
           backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://images.pexels.com/photos/219692/pexels-photo-219692.jpeg?auto=compress&cs=tinysrgb&w=1200')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          backgroundAttachment: "fixed",
+         
         }}
       >
         <div className="text-center max-w-4xl mx-auto mb-12">

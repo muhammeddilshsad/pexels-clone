@@ -7,6 +7,7 @@ import Videos from "./page/Video";
 import MasnoryModal from "./page/ImageModal";
 import Login from "./project/Login";
 import ImageUpload from "./page/upload";
+import VideoModal from "./page/VideoModal";
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/videos" element={<Videos />} />
         <Route path="/ImageModal" element={<MasnoryModal />} />
+        <Route path="/videoModal" element={<VideoModal/>}/>
         <Route path="/upload" element={<ImageUpload />} />
       </Routes>
       <Toaster />

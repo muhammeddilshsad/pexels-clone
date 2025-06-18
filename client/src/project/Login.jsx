@@ -54,7 +54,7 @@ export default function Login() {
 
       localStorage.setItem("user",JSON.stringify(userdata))
     
-      toast.success("LOGIN SUCCESFULY")
+      // toast.success("LOGIN SUCCESFULY")
       
       navigate("/")
     } catch (error) {
@@ -77,7 +77,8 @@ export default function Login() {
       })
       const userdata=response.data;
       localStorage.setItem("user",JSON.stringify(userdata))
-      toast.success("LOGIN SUCCESFULY")
+      navigate("/")
+      // toast.success("LOGIN SUCCESFULY")
        } catch (error) {
       console.log("Google Login Failed:", error);
     }

@@ -3,7 +3,9 @@ import React, { useEffect, useState } from "react";
 import { Search, ChevronDown, MoreHorizontal, Play } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getVideos } from "../Slice/videoSlice";
+import { getVideos,} from "../Slice/videoSlice";
+import { serchVideo } from "../Slice/videoSlice";
+import VideoModal from "./VideoModal";
 
 
 
@@ -11,19 +13,28 @@ const Videos = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { videos, loading } = useSelector((state) => state.videos);
+  const [selectVideo,setselectVideo]=useState(null)
+  const { videos, loading,serchVideo } = useSelector((state) => state.videos);
 
   useEffect(() => {
     dispatch(getVideos());
   }, [dispatch]);
 
+   const handleVideo=(Video)=>{
+    setselectVideo(Video)
+   }
   const home = () => {
     navigate("/");
   };
 
+
+  const handleCloseModal = () => {
+    setselectVideo(null);
+  };
+
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
+   
       <header className="absolute top-0 left-0 right-0 z-50 px-6 py-6">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           <div className="text-white text-3xl font-light italic tracking-wide">
@@ -48,11 +59,11 @@ const Videos = () => {
         </div>
       </header>
 
-      {/* Hero Section */}
+      
       <div
-        className="relative min-h-[500px] flex flex-col justify-center items-center px-6"
+        className="relative min-h-[550px] flex flex-col justify-center items-center px-6"
         style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('https://images.pexels.com/photos/17631065/pexels-photo-17631065/free-photo-of-ruins-of-abandoned-house-in-vast-grassland-flow-country-scotland.jpeg?auto=compress&cs=tinysrgb&w=1200&lazy=load')`,
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://images.pexels.com/photos/17631065/pexels-photo-17631065/free-photo-of-ruins-of-abandoned-house-in-vast-grassland-flow-country-scotland.jpeg?auto=compress&cs=tinysrgb&w=1200&lazy=load')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -85,8 +96,8 @@ const Videos = () => {
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="flex-1 px-6 py-5 text-gray-700 placeholder-gray-400 focus:outline-none text-lg"
                 />
-                <button className="p-5 hover:bg-gray-50 transition-colors">
-                  <Search size={22} className="text-gray-400" />
+                <button className="p-5 hover:bg-gray-50 transition-colors" onClick={()=> dispatch(serchVideo(searchTerm))}>
+                  <Search  className="text-gray-400" />
                 </button>
               </div>
             </div>
@@ -94,30 +105,31 @@ const Videos = () => {
         </div>
       </div>
 
-      {/* Sticky Navigation */}
-      <div className="bg-white sticky top-0 z-40 shadow-sm">
+     
+  
+  
         <div className="max-w-7xl mx-auto px-6">
           <nav className="flex justify-center space-x-12 py-2">
             <button
-              className="text-white bg-black px-6 py-2 rounded-full"
+              className="text-black px-6 py-2 rounded-full "
               onClick={home}
             >
               Home
             </button>
-            <button className="text-white bg-black px-6 py-2 rounded-full">
+            <button className="text-black px-6 py-2 rounded-full">
               Videos
             </button>
-            <button className="text-white bg-black px-6 py-2 rounded-full">
+            <button className="text-black  px-6 py-2 rounded-full">
               Leaderboard
             </button>
-            <button className="text-white bg-black px-6 py-2 rounded-full">
-              Challenges
+            <button className="text-black px-6 py-2 rounded-full">
+              Challenges 
             </button>
           </nav>
         </div>
-      </div>
+     
 
-      {/* Videos Grid */}
+     
       <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="flex items-center justify-between mb-12">
           <h2 className="text-3xl font-bold text-gray-900">
@@ -134,7 +146,7 @@ const Videos = () => {
             <p className="text-center col-span-3">Loading...</p>
           ) : videos.length > 0 ? (
             videos.map((video) => (
-              <div key={video._id} className="rounded-lg shadow-md overflow-hidden bg-white">
+              <div key={video._id} className="rounded-lg shadow-md overflow-hidden bg-white" onClick={()=>handleVideo(video)}>
                 <video
                   src={video.url}
                   controls
@@ -152,6 +164,8 @@ const Videos = () => {
                     {video.category || "Uncategorized"}
                   </p>
                 </div>
+                
+                
               </div>
             ))
           ) : (
@@ -159,6 +173,10 @@ const Videos = () => {
           )}
         </div>
       </div>
+      {selectVideo &&(
+
+      <VideoModal video={selectVideo} onClose={handleCloseModal}/>
+      )}
     </div>
   );
 };
