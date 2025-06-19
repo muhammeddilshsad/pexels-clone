@@ -1,32 +1,47 @@
-
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Search, ChevronDown, MoreHorizontal, Play } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getVideos,} from "../Slice/videoSlice";
-import { serchVideo } from "../Slice/videoSlice";
+import { getVideos, serchVideo } from "../Slice/videoSlice";
 import VideoModal from "./VideoModal";
-
-
 
 const Videos = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [selectVideo,setselectVideo]=useState(null)
-  const { videos, loading,serchVideo } = useSelector((state) => state.videos);
+  const [selectVideo, setselectVideo] = useState(null);
+  const [isLicenseDropdownOpen, setIsLicenseDropdownOpen] = useState(false);
+  const { videos, loading } = useSelector((state) => state.videos);
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     dispatch(getVideos());
   }, [dispatch]);
+  const user = JSON.parse(localStorage.getItem("user"));
+  console.log(user);
 
-   const handleVideo=(Video)=>{
-    setselectVideo(Video)
-   }
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsLicenseDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleVideo = (Video) => {
+    setselectVideo(Video);
+  };
+
   const home = () => {
     navigate("/");
   };
 
+  const handleUpload = () => {
+    navigate("/upload");
+  };
 
   const handleCloseModal = () => {
     setselectVideo(null);
@@ -34,7 +49,6 @@ const Videos = () => {
 
   return (
     <div className="min-h-screen bg-white">
-   
       <header className="absolute top-0 left-0 right-0 z-50 px-6 py-6">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           <div className="text-white text-3xl font-light italic tracking-wide">
@@ -49,17 +63,96 @@ const Videos = () => {
             <div className="hover:text-gray-200 cursor-pointer font-medium transition-colors">
               License
             </div>
-            <div className="hover:text-gray-200 cursor-pointer transition-colors">
-              <MoreHorizontal size={20} />
+
+            <div className="relative" ref={dropdownRef}>
+              <div
+                onClick={() => setIsLicenseDropdownOpen(!isLicenseDropdownOpen)}
+                className="hover:text-gray-200 cursor-pointer font-medium transition-colors"
+              >
+                ...
+              </div>
+
+              {isLicenseDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-lg z-50 overflow-hidden">
+                  <div className="py-4">
+                    <button
+                      onClick={() => {
+                        console.log("Clicked: Image & Video API");
+                        setIsLicenseDropdownOpen(false);
+                      }}
+                      className="w-full px-6 py-4 text-left text-gray-700 hover:bg-gray-50 transition-colors text-base font-medium"
+                    >
+                      Image & Video API
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        console.log("Clicked: Apps & Plugins");
+                        setIsLicenseDropdownOpen(false);
+                      }}
+                      className="w-full px-6 py-4 text-left text-gray-700 hover:bg-gray-50 transition-colors text-base font-medium"
+                    >
+                      Apps & Plugins
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        console.log("Clicked: Help Center");
+                        setIsLicenseDropdownOpen(false);
+                      }}
+                      className="w-full px-6 py-4 text-left text-gray-700 hover:bg-gray-50 transition-colors text-base font-medium"
+                    >
+                      Help Center
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        console.log("Clicked: Report Content");
+                        setIsLicenseDropdownOpen(false);
+                      }}
+                      className="w-full px-6 py-4 text-left text-gray-700 hover:bg-gray-50 transition-colors text-base font-medium"
+                    >
+                      Report Content
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        console.log("Clicked: Partnerships");
+                        setIsLicenseDropdownOpen(false);
+                      }}
+                      className="w-full px-6 py-4 text-left text-gray-700 hover:bg-gray-50 transition-colors text-base font-medium"
+                    >
+                      Partnerships
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        console.log("Clicked: Imprint & Terms");
+                        setIsLicenseDropdownOpen(false);
+                      }}
+                      className="w-full px-6 py-4 text-left text-gray-700 hover:bg-gray-50 transition-colors text-base font-medium"
+                    >
+                      Imprint & Terms
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
+
             <button className="bg-white text-gray-900 px-6 py-2.5 rounded-lg font-medium hover:bg-gray-100 transition-colors shadow-sm">
               Join
+            </button>
+
+            <button
+              className="bg-white text-gray-900 px-6 py-2.5 rounded-lg font-medium hover:bg-gray-100 transition-colors shadow-sm"
+              onClick={handleUpload}
+            >
+              upload
             </button>
           </nav>
         </div>
       </header>
 
-      
       <div
         className="relative min-h-[550px] flex flex-col justify-center items-center px-6"
         style={{
@@ -96,8 +189,11 @@ const Videos = () => {
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="flex-1 px-6 py-5 text-gray-700 placeholder-gray-400 focus:outline-none text-lg"
                 />
-                <button className="p-5 hover:bg-gray-50 transition-colors" onClick={()=> dispatch(serchVideo(searchTerm))}>
-                  <Search  className="text-gray-400" />
+                <button
+                  className="p-5 hover:bg-gray-50 transition-colors"
+                  onClick={() => dispatch(serchVideo(searchTerm))}
+                >
+                  <Search className="text-gray-400" />
                 </button>
               </div>
             </div>
@@ -105,31 +201,21 @@ const Videos = () => {
         </div>
       </div>
 
-     
-  
-  
-        <div className="max-w-7xl mx-auto px-6">
-          <nav className="flex justify-center space-x-12 py-2">
-            <button
-              className="text-black px-6 py-2 rounded-full "
-              onClick={home}
-            >
-              Home
-            </button>
-            <button className="text-black px-6 py-2 rounded-full">
-              Videos
-            </button>
-            <button className="text-black  px-6 py-2 rounded-full">
-              Leaderboard
-            </button>
-            <button className="text-black px-6 py-2 rounded-full">
-              Challenges 
-            </button>
-          </nav>
-        </div>
-     
+      <div className="max-w-7xl mx-auto px-6">
+        <nav className="flex justify-center space-x-12 py-2">
+          <button className="text-black px-6 py-2 rounded-full " onClick={home}>
+            Home
+          </button>
+          <button className="text-black px-6 py-2 rounded-full">Videos</button>
+          <button className="text-black  px-6 py-2 rounded-full">
+            Leaderboard
+          </button>
+          <button className="text-black px-6 py-2 rounded-full">
+            Challenges
+          </button>
+        </nav>
+      </div>
 
-     
       <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="flex items-center justify-between mb-12">
           <h2 className="text-3xl font-bold text-gray-900">
@@ -146,7 +232,11 @@ const Videos = () => {
             <p className="text-center col-span-3">Loading...</p>
           ) : videos.length > 0 ? (
             videos.map((video) => (
-              <div key={video._id} className="rounded-lg shadow-md overflow-hidden bg-white" onClick={()=>handleVideo(video)}>
+              <div
+                key={video._id}
+                className="rounded-lg shadow-md overflow-hidden bg-white"
+                onClick={() => handleVideo(video)}
+              >
                 <video
                   src={video.url}
                   controls
@@ -164,8 +254,6 @@ const Videos = () => {
                     {video.category || "Uncategorized"}
                   </p>
                 </div>
-                
-                
               </div>
             ))
           ) : (
@@ -173,9 +261,8 @@ const Videos = () => {
           )}
         </div>
       </div>
-      {selectVideo &&(
-
-      <VideoModal video={selectVideo} onClose={handleCloseModal}/>
+      {selectVideo && (
+        <VideoModal video={selectVideo} onClose={handleCloseModal} />
       )}
     </div>
   );

@@ -20,18 +20,18 @@ export const getVideos = createAsyncThunk("image/getallvideo", async () => {
 });
 
 
-export const serchVideo=createAsyncThunk("image/serchVideo",async(serchQuery)=>{
-    console.log(serchQuery)
-    try {
-        const respon= await axiosInstance.get(`image/serchVideo?query=${serchQuery}`)
-        console.log(respon.data)
-        
-        return respon.data;
-    } catch (error) {
-        console.log(error)
-        
-    }
-})
+
+export const serchVideo = createAsyncThunk("video/serchVideo", async (searchQuery) => {
+  try {
+    const response = await axiosInstance.get(`/image/serchVideo?query=${searchQuery}`);
+    return response.data;
+  } catch (error) {
+    console.error( error);
+    throw error;
+  }
+});
+
+
 
 const videoSlice = createSlice({
   name: "videos",
@@ -70,3 +70,5 @@ const videoSlice = createSlice({
 });
 
 export default videoSlice.reducer;
+
+
