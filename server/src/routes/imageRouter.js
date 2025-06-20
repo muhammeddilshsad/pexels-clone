@@ -3,6 +3,7 @@ import { getAllimage, serchImage } from "../Controller/imageController.js";
 import { addImage } from "../Controller/addImage.js";
 import { upload } from "../Middleware/imageUpload.js";
 import { addVideo, getAllVideos, searchVideos } from "../Controller/videoController.js";
+import { videoUpload } from "../Middleware/VideoUpload.js";
 
 
 const imageRoute = express
@@ -11,9 +12,12 @@ const imageRoute = express
   .get("/getAllimage", getAllimage)
   .post("/upload", upload.single("imageUrl"), addImage)
   .get("/serchImage",serchImage)
-  .post('/addVideo',addVideo)
+
+    // videoRoute
+    
   .get("/getallvideo",getAllVideos)
   .get("/serchVideo",searchVideos)
+  .post("/addVideo",videoUpload.single("url"),addVideo)
   
 
 export default imageRoute;

@@ -228,6 +228,7 @@ export default function PexelsHomepage() {
                 <span className="text-gray-600 text-sm font-medium">
                   Photos
                 </span>
+               
                 <ChevronDown className="w-4 h-4 text-gray-400 ml-2" />
               </div>
               <div className="flex-1 relative">

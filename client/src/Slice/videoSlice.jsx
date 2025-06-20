@@ -1,14 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { axiosInstance } from "../../axiosInstance";
+ 
 
-export const Videos = createAsyncThunk("/image/addVideo", async () => {
-  try {
-    const respo = await axiosInstance.post("/image/addVideo");
-    console.log(respo.data);
-  } catch (error) {}
-});
-
-export const getVideos = createAsyncThunk("image/getallvideo", async () => {
+export const getVideos = createAsyncThunk("/image/getallvideo", async () => {
   try {
     const res = await axiosInstance.get("/image/getallvideo");
     console.log(res.data);
@@ -31,6 +25,10 @@ export const serchVideo = createAsyncThunk("video/serchVideo", async (searchQuer
   }
 });
 
+export const handleVideoSubmit = createAsyncThunk("videos/upload", async (payload) => {
+  const response = await axiosInstance.post("/image/addVideo", payload);
+  return response.data;
+});
 
 
 const videoSlice = createSlice({
@@ -66,6 +64,22 @@ const videoSlice = createSlice({
         state.loading=false,
         state.error=true
     })
+    Builder.addCase(handleVideoSubmit.pending, (state) => {
+      state.loading = true;
+    });
+    
+    Builder.addCase(handleVideoSubmit.fulfilled, (state, action) => {
+      state.loading = false;
+      state.videos.unshift(action.payload); 
+      state.error = false;
+    });
+    
+    Builder.addCase(handleVideoSubmit.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message;
+    });
+    
+
   },
 });
 

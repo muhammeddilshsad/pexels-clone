@@ -40,7 +40,7 @@ const Videos = () => {
   };
 
   const handleUpload = () => {
-    navigate("/upload");
+    navigate("/Videoupload");
   };
 
   const handleCloseModal = () => {

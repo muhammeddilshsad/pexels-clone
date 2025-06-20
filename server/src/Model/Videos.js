@@ -22,9 +22,7 @@ const videoSchema = new mongoose.Schema({
     type: String,
   },
   videoGrapher: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
+ type:String,
   },
   tags: [String],
   createdAt: {
