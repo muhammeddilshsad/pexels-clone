@@ -4,20 +4,14 @@ const imageSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
-    trim: true,
+    
   },
-  description: {
-    type: String,
-    trim: true,
-  },
+  
   imageUrl: {
     type: String,
     required: true,
   },
-  photographer: {
-    type: String,
-    required: true,
-  },
+  
   tags: [String],
   category: {
     type: String,

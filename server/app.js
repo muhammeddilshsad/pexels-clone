@@ -4,6 +4,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import authRouter from "./src/routes/authRouter.js";
 import imageRoute from "./src/routes/imageRouter.js";
+import Following from "./src/Model/Following.js";
+import FollowRoute from "./src/routes/FollowRouter.js";
 
 dotenv.config();
 const app = express();
@@ -20,6 +22,7 @@ app.use(express.json());
 
 app.use("/api/auth", authRouter);
 app.use("/api/image", imageRoute);
+app.use("/api/follow",FollowRoute)
 
 mongoose
   .connect(process.env.MONGO_URL)

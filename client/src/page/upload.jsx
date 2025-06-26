@@ -1,234 +1,302 @@
+import { Upload, Trash2, ChevronDown, Image, Video } from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { handleVideoSubmit } from "../Slice/videoSlice";
+import { handleImagesubmit } from "../Slice/ImageSlice";
+import toast from "react-hot-toast";
+import Mynavbar from "./mynavbar";
 
-import React, { useState } from 'react';
-import { Upload, Copy, Trash2, ChevronDown } from 'lucide-react';
-import toast from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { handleImagesubmit } from '../Slice/ImageSlice';
-const ImageUpload = () => {
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [imageFile, setImageFile] = useState(null); 
-  const navigate=useNavigate()
-  const dispatch=useDispatch()
+const MediaUpload = ({ type = "image" }) => {
+  const isVideo = type === "video";
+  
+  
+  const [filePreview, setFilePreview] = useState(null);
+  const [file, setFile] = useState(null);
+  const [isDragOver, setIsDragOver] = useState(false);
+  const [uploadCount, setUploadCount] = useState(0);
+
   const [formData, setFormData] = useState({
-    title: '',
-    tags: '',
-    location: '',
-    challenges: ''
+    title: "",
+    description: "",
+    category: "",
+    challenges: "",
+    photographer: "",
   });
   const [showChallengesDropdown, setShowChallengesDropdown] = useState(false);
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const challengeOptions = [
-    'Photography Challenge',
-    'Travel Challenge',
-    'Adventure Challenge',
-    'Lifestyle Challenge',
-    'Creative Challenge'
+    "Documentary",
+    "Lifestyle",
+    "Nature",
+    "Travel",
+    "Creative Challenge",
   ];
 
-  const handleImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setImageFile(file);
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setSelectedImage(e.target.result);
-      };
-      reader.readAsDataURL(file);
+  const handleFileUpload = (uploadedFile) => {
+    if (uploadedFile) {
+      setFile(uploadedFile);
+      setFilePreview(URL.createObjectURL(uploadedFile));
+      setUploadCount((prev) => prev + 1);
+    }
+  };
+
+  const handleFileSelect = (event) => {
+    const uploadedFile = event.target.files[0];
+    handleFileUpload(uploadedFile);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setIsDragOver(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    const droppedFile = e.dataTransfer.files[0];
+    if (
+      droppedFile &&
+      (isVideo
+        ? droppedFile.type.startsWith("video/")
+        : droppedFile.type.startsWith("image/"))
+    ) {
+      handleFileUpload(droppedFile);
     }
   };
 
   const handleInputChange = (field, value) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
   const handleChallengeSelect = (challenge) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      challenges: challenge
+      challenges: challenge,
     }));
     setShowChallengesDropdown(false);
   };
-
   const handleSubmit = async () => {
-    if (!imageFile) {
-      toast.error('Please upload an image before submitting.');
+    if (!file) {
+      toast.error(
+        `Please upload a ${
+          isVideo ? "video" : "file (image)"
+        } before submitting.`
+      );
       return;
     }
 
     const payload = new FormData();
-    payload.append('imageUrl', imageFile);
-    payload.append('title', formData.title);
-    payload.append('tags', formData.tags);
-    payload.append('category', formData.category);
- 
-    payload.append('photographer',formData)
+    payload.append(isVideo ? "url" : "imageUrl", file);
+    payload.append("title", formData.title);
+    payload.append("category", formData.category);
+    payload.append("challenges", formData.challenges);
+    if (!isVideo) {
+      payload.append("photographer", formData.photographer);
+    }
 
     try {
-     await dispatch(handleImagesubmit(payload))
-     navigate('/')
-
+      await dispatch(
+        isVideo ? handleVideoSubmit(payload) : handleImagesubmit(payload)
+      );
+      toast.success(`${isVideo ? "Video" : "Image"} uploaded successfully!`);
+      navigate(isVideo ? "/videos" : "/");
     } catch (error) {
       console.error(error);
+      toast.error("Upload failed.");
     }
   };
 
-  const removeImage = () => {
-    setSelectedImage(null);
-    setImageFile(null);
+  const removeFile = () => {
+    setFile(null);
+    setFilePreview(null);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6 mt-25">
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-          <div className="flex flex-col lg:flex-row">
-            {/* Image Upload Section */}
-            <div className="lg:w-1/2 p-6">
-              <div className="relative">
-                {selectedImage ? (
-                  <div className="relative">
-                    <img 
-                      src={selectedImage} 
-                      alt="Uploaded content" 
-                      className="w-full h-96 object-cover rounded-lg shadow-md"
-                    />
-                    <button
-                      onClick={removeImage}
-                      className="absolute top-3 right-3 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
+    <>
+      <Mynavbar />
+      <div className="min-h-full bg-gray-50 flex justify-center p-6">
+        <div className="w-full max-w-2xl bg-white rounded-2xl shadow-sm p-8">
+          {/* Header */}
+          <div className="text-center mb-12">
+            <h1 className="text-3xl font-medium text-gray-900 mb-4">
+              Share your {isVideo ? "videos" : "photos"} and videos, and let the
+              world love them.
+            </h1>
+            <p className="text-gray-600 text-lg">
+              Share your first 50 {isVideo ? "videos" : "photos"} or videos to
+              introduce yourself to millions of users.
+            </p>
+            <div className="text-right mt-4">
+              <span className="text-gray-400 text-sm">({uploadCount}/50)</span>
+            </div>
+          </div>
+
+          {/* Upload Area */}
+          <div className="mb-8">
+            {filePreview ? (
+              <div className="relative mb-6">
+                {isVideo ? (
+                  <video
+                    src={filePreview}
+                    controls
+                    className="w-full h-64 object-cover rounded-xl shadow-sm"
+                  />
                 ) : (
-                  <label
-                    className="w-full h-96 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-colors"
-                  >
-                    <Upload size={48} className="text-gray-400 mb-4" />
-                    <p className="text-gray-500 text-center">
-                      Click to upload an image
-                      <br />
-                      <span className="text-sm">JPG, PNG, GIF up to 10MB</span>
+                  <img
+                    src={filePreview}
+                    alt="Preview"
+                    className="w-full h-64 object-cover rounded-xl shadow-sm"
+                  />
+                )}
+                <button
+                  onClick={removeFile}
+                  className="absolute top-3 right-3 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors shadow-lg"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
+            ) : (
+              <div className="text-center mb-6">
+                {/* Icon Display */}
+                <div className="flex justify-center mb-6">
+                  <div className="flex space-x-2">
+                    <div className="w-16 h-16 bg-green-100 rounded-xl flex items-center justify-center">
+                      <Image className="text-green-500" size={24} />
+                    </div>
+                    <div className="w-20 h-16 bg-green-200 rounded-xl flex items-center justify-center">
+                      <Image className="text-green-600" size={28} />
+                    </div>
+                    <div className="w-16 h-16 bg-green-100 rounded-xl flex items-center justify-center">
+                      <Video className="text-green-500" size={24} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Upload Text */}
+                <h2 className="text-2xl font-medium text-gray-900 mb-2">
+                  Drag and drop
+                </h2>
+                <p className="text-xl text-gray-900 mb-6">to upload, or</p>
+
+                {/* Browse Button and Upload Area */}
+                <label
+                  className={`relative block w-full h-32 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-200 ${
+                    isDragOver
+                      ? "border-green-400 bg-green-50"
+                      : "border-gray-300 hover:border-green-400 hover:bg-green-50"
+                  }`}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                >
+                  <div className="flex flex-col items-center justify-center h-full">
+                    <button
+                      type="button"
+                      className="bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-xl font-medium transition-colors"
+                    >
+                      Browse
+                    </button>
+                    <p className="text-gray-500 text-sm mt-2">
+                      {isVideo
+                        ? "MP4, MOV up to 100MB"
+                        : "JPG, PNG, GIF up to 10MB"}
                     </p>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      className="hidden"
-                    />
-                  </label>
+                  </div>
+                  <input
+                    type="file"
+                    accept={isVideo ? "video/*" : "image/*"}
+                    onChange={handleFileSelect}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  />
+                </label>
+              </div>
+            )}
+          </div>
+
+          {/* Form Fields */}
+          {(filePreview || file) && (
+            <div className="space-y-4">
+              <input
+                type="text"
+                placeholder="Enter title"
+                value={formData.title}
+                onChange={(e) => handleInputChange("title", e.target.value)}
+                className="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none focus:border-green-400 focus:ring-2 focus:ring-green-100 transition-all"
+              />
+
+              <input
+                type="text"
+                placeholder="Tags"
+                value={formData.category}
+                onChange={(e) => handleInputChange("category", e.target.value)}
+                className="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none focus:border-green-400 focus:ring-2 focus:ring-green-100 transition-all"
+              />
+
+              <input
+                type="text"
+                placeholder="Loaction"
+                value={formData.photographer}
+                onChange={(e) =>
+                  handleInputChange("photographer", e.target.value)
+                }
+                className="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none focus:border-green-400 focus:ring-2 focus:ring-green-100 transition-all"
+              />
+
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setShowChallengesDropdown(!showChallengesDropdown)
+                  }
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white flex justify-between items-center focus:border-green-400 focus:ring-2 focus:ring-green-100 transition-all"
+                >
+                  <span
+                    className={
+                      formData.challenges ? "text-gray-900" : "text-gray-500"
+                    }
+                  >
+                    {formData.challenges || "Select challenges"}
+                  </span>
+                  <ChevronDown size={16} className="text-gray-400" />
+                </button>
+
+                {showChallengesDropdown && (
+                  <div className="absolute top-full mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg z-10 overflow-hidden">
+                    {challengeOptions.map((item) => (
+                      <button
+                        key={item}
+                        onClick={() => handleChallengeSelect(item)}
+                        className="w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors first:rounded-t-xl last:rounded-b-xl"
+                      >
+                        {item}
+                      </button>
+                    ))}
+                  </div>
                 )}
               </div>
 
-              {selectedImage && (
-                <div className="mt-4 text-sm text-green-600 bg-green-50 p-3 rounded-lg">
-                  ✓ Image uploaded successfully
-                </div>
-              )}
-            </div>
-
-           
-            <div className="lg:w-1/2 p-6 space-y-6">
-            
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Title <span className="text-gray-400"></span>
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="Enter title"
-                    value={formData.title}
-                    onChange={(e) => handleInputChange('title', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                  />
-    
-                </div>
-              </div>
-
-       
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                description <span className="text-gray-400"></span>
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="Enter tags"
-                    value={formData.tags}
-                    onChange={(e) => handleInputChange('tags', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                  />
-
-                </div>
-              </div>
-
-      
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  category <span className="text-gray-400"></span>
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="Enter a location"
-                    value={formData.location}
-                    onChange={(e) => handleInputChange('location', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                  />
-
-                </div>
-              </div>
-
-            
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Challenges <span className="text-gray-400">(optional)</span>
-                </label>
-                <div className="relative">
-                  <button
-                    type="button"
-                    onClick={() => setShowChallengesDropdown(!showChallengesDropdown)}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-left bg-white flex items-center justify-between"
-                  >
-                    <span className={formData.challenges ? 'text-gray-900' : 'text-gray-500'}>
-                      {formData.challenges || 'Select challenges'}
-                    </span>
-                    <ChevronDown size={16} className={`text-gray-400 transition-transform ${showChallengesDropdown ? 'rotate-180' : ''}`} />
-                  </button>
-
-                  {showChallengesDropdown && (
-                    <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
-                      {challengeOptions.map((challenge, index) => (
-                        <button
-                          key={index}
-                          onClick={() => handleChallengeSelect(challenge)}
-                          className="w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors first:rounded-t-lg last:rounded-b-lg"
-                        >
-                          {challenge}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-             
               <button
                 onClick={handleSubmit}
-                className="w-full bg-green-500 text-white py-3 px-6 rounded-lg font-medium hover:bg-green-600 transition-colors focus:ring-2 focus:ring-green-500 focus:ring-offset-2 outline-none"
+                className="w-full bg-green-500 hover:bg-green-600 text-white py-4 px-6 rounded-xl font-medium transition-colors text-lg"
               >
-                Submit your content
+                Submit {isVideo ? "Video" : "Image"}
               </button>
             </div>
-          </div>
+          )}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
-export default ImageUpload;
+export default MediaUpload;

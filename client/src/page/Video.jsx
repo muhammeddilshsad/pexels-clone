@@ -40,7 +40,7 @@ const Videos = () => {
   };
 
   const handleUpload = () => {
-    navigate("/Videoupload");
+    navigate("/upload/video");
   };
 
   const handleCloseModal = () => {
@@ -147,7 +147,7 @@ const Videos = () => {
               className="bg-white text-gray-900 px-6 py-2.5 rounded-lg font-medium hover:bg-gray-100 transition-colors shadow-sm"
               onClick={handleUpload}
             >
-              upload
+              Upload
             </button>
           </nav>
         </div>
@@ -203,16 +203,18 @@ const Videos = () => {
 
       <div className="max-w-7xl mx-auto px-6">
         <nav className="flex justify-center space-x-12 py-2">
-          <button className="text-black px-6 py-2 rounded-full " onClick={home}>
+          <button className="text-black px-6 py-2 rounded-full"onClick={home}>
             Home
           </button>
           <button className="text-black px-6 py-2 rounded-full">Videos</button>
-          <button className="text-black  px-6 py-2 rounded-full">
+          <button className="text-black  px-6 py-2 rounded-full" onClick={()=>navigate("/leaderboard")}>
             Leaderboard
           </button>
-          <button className="text-black px-6 py-2 rounded-full">
+          
+          <button className="text-black px-6 py-2 rounded-full" onClick={()=>navigate("/Challenges")}>
             Challenges
           </button>
+
         </nav>
       </div>
 
@@ -248,11 +250,6 @@ const Videos = () => {
                   <h3 className="text-lg font-semibold text-gray-900">
                     {video.title}
                   </h3>
-                  <p className="text-sm text-gray-600">{video.description}</p>
-                  <p className="text-sm text-gray-500 mt-1">
-                    Duration: {video.duration || "Unknown"} | Category:{" "}
-                    {video.category || "Uncategorized"}
-                  </p>
                 </div>
               </div>
             ))

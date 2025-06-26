@@ -3,7 +3,7 @@ import { Download, Heart } from 'lucide-react';
 import React, { useState } from 'react'
 
 function MasnoryGrid({images,onclick}) {
-    console.log(images);
+    console.log("im",images[0]);
     
     const [imageHeights, setImageHeights] = useState({});
   
@@ -40,7 +40,7 @@ function MasnoryGrid({images,onclick}) {
                 <h3 className="text-white font-semibold text-sm mb-1">{image.title}</h3>
                 <p className="text-white/80 text-xs mb-2">{image.description}</p>
                 <div className="flex items-center justify-between">
-                  <span className="text-white/90 text-xs">by {image.photographer}</span>
+                  <span className="text-white/90 text-xs">by {image.uploadedBy.name}</span>
                   <div className="flex items-center space-x-3 text-white/80 text-xs">
                     <span className="flex items-center">
                       <Heart className="w-3 h-3 mr-1" />

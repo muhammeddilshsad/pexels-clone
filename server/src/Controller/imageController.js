@@ -2,7 +2,14 @@ import Image from "../Model/Image.js";
 
 export const getAllimage = async (req, res) => {
   try {
-    const images = await Image.find();
+    const images = await Image.find()
+    .populate(({
+      path: 'uploadedBy',
+      select: 'name email', 
+    }))
+    console.log(images);
+    
+    
     res.status(200).json(images);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -10,6 +17,7 @@ export const getAllimage = async (req, res) => {
 };
 
 export const serchImage = async (req, res) => {
+
   try {
     const query = req.query.query;
     console.log("User Search:", query);
@@ -31,4 +39,6 @@ export const serchImage = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+
 

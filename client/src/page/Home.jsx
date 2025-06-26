@@ -9,6 +9,7 @@ import {
   Bell,
   Instagram,
   Youtube,
+  User,
 } from "lucide-react";
 import MasnoryGrid from "./Masnorygrid";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -20,6 +21,7 @@ export default function PexelsHomepage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("Home");
   const [selectedImage, setSelectedImage] = useState(null);
+  const [profileDropdown, setProfileDropdown] = useState(false);
   const [isLicenseDropdownOpen, setIsLicenseDropdownOpen] = useState(false);
   const [isLogged, setIsLogged] = useState(false);
 
@@ -29,7 +31,7 @@ export default function PexelsHomepage() {
   const user = JSON.parse(localStorage.getItem("user"));
   console.log(user);
   const upload = () => {
-    navigate("/upload");
+    navigate("/upload/image");
   };
 
   useEffect(() => {
@@ -81,14 +83,14 @@ export default function PexelsHomepage() {
                         navigate("/login");
                       }}
                       className="w-full px-6 py-4 text-left text-gray-700 hover:bg-gray-50 transition-colors text-base font-medium"
-                      >
+                    >
                       Log Out
                     </button>
                   ) : (
                     <button
                       onClick={() => navigate("/login")}
                       className="w-full px-6 py-4 text-left text-gray-700 hover:bg-gray-50 transition-colors text-base font-medium"
-                      >
+                    >
                       Log in
                     </button>
                   )}
@@ -147,8 +149,6 @@ export default function PexelsHomepage() {
                   >
                     Imprint & Terms
                   </button>
-
-              
                 </div>
 
                 <div className="px-6 py-4 border-t border-gray-100">
@@ -166,9 +166,7 @@ export default function PexelsHomepage() {
                       <Youtube className="w-5 h-5 text-gray-600" />
                     </button>
                     <button className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
-                      <div className="w-5 h-5 text-gray-600 font-bold italic text-xs">
-                        d
-                      </div>
+                      <div className="w-5 h-5 text-gray-600 font-bold italic text-xs"></div>
                     </button>
                   </div>
                 </div>
@@ -185,16 +183,49 @@ export default function PexelsHomepage() {
           <button className="bg-white text-black px-6 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors">
             Join
           </button>
-          {user ?(
-              <button
+          <div className="relative">
+            <button
+              onClick={() => setProfileDropdown(!profileDropdown)}
+              className="text-gray-600 hover:text-gray-800"
+            >
+              <User className="w-5 h-5" />
+            </button>
+            {profileDropdown && (
+              <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                <div className="py-2">
+                  <button className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" onClick={()=>navigate("/profile")}>
+                    Your Profile
+                  </button>
+                  <button className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                    Your Collections
+                  </button>
+                  <button className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                    Settings
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      localStorage.clear();
+                      setIsLogged(false);
+                      navigate("/login");
+                    }}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {user ? (
+            <button
               onClick={upload}
               className="bg-white text-black px-6 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors"
             >
               Upload
             </button>
-
-          ):null}
-        
+          ) : null}
         </div>
       </header>
 
@@ -211,7 +242,6 @@ export default function PexelsHomepage() {
           backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://images.pexels.com/photos/219692/pexels-photo-219692.jpeg?auto=compress&cs=tinysrgb&w=1200')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-         
         }}
       >
         <div className="text-center max-w-4xl mx-auto mb-12">
@@ -228,7 +258,7 @@ export default function PexelsHomepage() {
                 <span className="text-gray-600 text-sm font-medium">
                   Photos
                 </span>
-               
+
                 <ChevronDown className="w-4 h-4 text-gray-400 ml-2" />
               </div>
               <div className="flex-1 relative">
@@ -278,7 +308,7 @@ export default function PexelsHomepage() {
             Videos
           </button>
           <button
-            onClick={() => setActiveTab("Leaderboard")}
+            onClick={() => navigate("/leaderboard")}
             className={`px-6 py-2 rounded-full font-medium transition-all ${
               activeTab === "Leaderboard"
                 ? "bg-black text-white"

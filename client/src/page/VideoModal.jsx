@@ -23,8 +23,7 @@ function VideoModal({ video, onClose }) {
 
         {/* Info */}
         <h2 className="text-xl font-semibold mb-1">{video.title}</h2>
-        <p className="text-gray-700 mb-1">{video.description}</p>
-        <p className="text-sm text-gray-500 mb-2">By: {video.uploadedBy}</p>
+        <p className="text-sm text-gray-500 mb-2">By: {video.uploadedBy.name}</p>
 
         {/* Actions */}
         <div className="flex space-x-4 mt-4">

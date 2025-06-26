@@ -27,7 +27,10 @@ export const serchVideo = createAsyncThunk("video/serchVideo", async (searchQuer
 
 export const handleVideoSubmit = createAsyncThunk("videos/upload", async (payload) => {
   const response = await axiosInstance.post("/image/addVideo", payload);
+  console.log('nihal',response.data);
+  
   return response.data;
+  
 });
 
 

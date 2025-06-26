@@ -1,4 +1,5 @@
 import User from "../Model/User.js"
+import { generateRefreshToken, generateToken } from "../utils/generateToken.js";
 
 export const  register=async(req,res)=>{
     
@@ -15,16 +16,17 @@ console.log(req.body)
 }
 
 export const login=async (req,res)=>{
+
     const {email,password}=req.body
     const user= await User.findOne({email})
+    const token=generateToken(user)
+    console.log(user)
 
     if(user && (await user.matchPassword(password))){
+        
         res.json({
-            _id:user._id,
-            name:user.name,
-            email:user.email,
-            role:user.role,
-            token:(user),
+            user:user,
+            token:token,
             isBlocked:user.isBlocked,
         });
     }else{

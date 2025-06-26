@@ -15,18 +15,17 @@ export const fetch = createAsyncThunk("image", async () => {
 
 export const handleImagesubmit = createAsyncThunk(
   "image/upload",
-  async (payload) => {
+  async (payload, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post("/image/upload", payload, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-      toast.success("Content submitted successfully!");
-      console.log(response.data);
+      return response.data; 
     } catch (error) {
       toast.error("Failed to submit content.");
-      console.error(error);
+      return rejectWithValue(error.response?.data || error.message);
     }
   }
 );

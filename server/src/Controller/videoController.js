@@ -3,12 +3,13 @@ import Video from "../Model/Videos.js";
 
 
 export const addVideo = async (req, res) => {
-  console.log(req);
   
   try {
     console.log(req.body)
+    console.log(req);
+    
     const video = req.file?.path;
-    const { title, description, category, tags, videoGrapher } = req.body;
+    const { title, description, category, tags } = req.body;
 
     if (!title || !video) {
       return res.status(400).json({ message: 'Title and video file are required' });
@@ -18,7 +19,7 @@ export const addVideo = async (req, res) => {
       title,
       description,
       url: video,
-      videoGrapher,
+      uploadedBy:req.user.id,
       category,
       tags,
     });
@@ -35,7 +36,7 @@ export const addVideo = async (req, res) => {
 
 export const getAllVideos = async (req, res) => {
   try {
-    const videos = await Video.find().sort({ createdAt: -1 });
+    const videos = await Video.find().sort({ createdAt: -1 }).populate("uploadedBy","_id name email") 
     res.status(200).json(videos);
   } catch (error) {
     res.status(500).json({ message: 'Failed to fetch videos', error: error.message });
