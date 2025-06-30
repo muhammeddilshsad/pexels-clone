@@ -1,14 +1,22 @@
+import mongoose from "mongoose";
 import Follow from "../Model/Following.js";
 import Image from "../Model/Image.js";
 import User from "../Model/Image.js";
 
 export const getTopUploaders = async (req, res) => {
   try {
+    const loggedInUserId = req.user.id; 
+
     const topUsers = await Image.aggregate([
       {
         $group: {
           _id: "$uploadedBy",
           uploadCount: { $sum: 1 },
+        },
+      },
+      {
+        $match: {
+          _id: { $ne: new mongoose.Types.ObjectId(loggedInUserId) }, 
         },
       },
       {
@@ -42,7 +50,6 @@ export const getTopUploaders = async (req, res) => {
           name: "$userDetails.name",
           email: "$userDetails.email",
           uploadCount: 1,
-
           images: {
             $map: {
               input: "$userImages",
@@ -50,7 +57,6 @@ export const getTopUploaders = async (req, res) => {
               in: "$$img.imageUrl",
             },
           },
-
           totalMedia: { $size: "$userImages" },
         },
       },
@@ -58,7 +64,10 @@ export const getTopUploaders = async (req, res) => {
 
     res.status(200).json(topUsers);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching top uploaders", error });
+    console.log(error)
+    res
+      .status(500)
+      .json({ message: "Error fetching top uploaders", error });
   }
 };
 
@@ -80,6 +89,7 @@ export const toggleFollow = async (req, res, next) => {
       await Follow.deleteOne({ follower: followerId, following: targetUserId });
       return res.status(200).json({ message: "Unfollowed successfully" });
     }
+
 
     const newFollow = new Follow({ follower: followerId, following: targetUserId });
     await newFollow.save();
@@ -108,23 +118,80 @@ export const getFollowers = async (req, res) => {
       .json({ message: "Error getting followers", error: error.message });
   }
 };
+export const getFollowingImages = async (req, res) => {
+  try {
+    const userId = req.body.follower;
+
+    const following = await Follow.find({ follower: userId }).select("following");
+
+    const followingIds = following.map((f) => f.following);
+
+    const images = await Image.find({ uploadedBy: { $in: followingIds } });
+
+    res.status(200).json(images);
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to fetch images from followed users",
+      error: error.message,
+    });
+  }
+};
+
+
+export const getFollowingImagesByUser = async (req, res) => {
+  try {
+    const loggedInUserId = req.user.id; // from JWT
+    const targetUserId = req.params.userId; // user whose images you want to see
+
+ 
+    const isFollowing = await Follow.findOne({
+      follower: loggedInUserId,
+      following: targetUserId,
+    });
+
+    if (!isFollowing) {
+      return res.status(403).json({ message: "You are not following this user." });
+    }
+
+    // 2. Get images uploaded by the target user
+    const images = await Image.find({ uploadedBy: targetUserId }).sort({ createdAt: -1 });
+
+    res.status(200).json(images);
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to fetch following user's images",
+      error: error.message,
+    });
+  }
+};
+
+
+
 
 export const getFollowing = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const userId = req.user.id;
+    console.log()
 
-    const following = await Follow.find({ follower: userId }).populate(
+    const followingData = await Follow.find({ follower: userId }).populate(
       "following",
-      "username"
+      "name email"
     );
 
-    res.status(200).json(following);
+    const followingUsers = followingData.map((follow) => follow.following);
+    console.log(followingUsers)
+
+    res.status(200).json(followingUsers);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error getting following list", error: error.message });
+    res.status(500).json({
+      message: "Error getting following list",
+      error: error.message,
+    });
   }
 };
+
+
+
 
 export const getFollowStatus = async (req, res, next) => {
   try {
@@ -137,3 +204,4 @@ export const getFollowStatus = async (req, res, next) => {
     next(err);
   }
 };
+

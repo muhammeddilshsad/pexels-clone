@@ -8,7 +8,8 @@ export const store = configureStore({
   reducer: {
     images: imageSlice,
     videos:videoSlice,
-    follow:followSlice
+    follow:followSlice,
+  
     
   },
 });

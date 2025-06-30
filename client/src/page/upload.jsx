@@ -126,7 +126,7 @@ const MediaUpload = ({ type = "image" }) => {
       <Mynavbar />
       <div className="min-h-full bg-gray-50 flex justify-center p-6">
         <div className="w-full max-w-2xl bg-white rounded-2xl shadow-sm p-8">
-          {/* Header */}
+          
           <div className="text-center mb-12">
             <h1 className="text-3xl font-medium text-gray-900 mb-4">
               Share your {isVideo ? "videos" : "photos"} and videos, and let the
@@ -300,3 +300,5 @@ const MediaUpload = ({ type = "image" }) => {
 };
 
 export default MediaUpload;
+
+

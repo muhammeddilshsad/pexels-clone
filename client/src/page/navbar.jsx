@@ -8,7 +8,7 @@ import {
   Image,
   Instagram,
   Youtube,
-  User, // Assuming a User icon from lucide-react
+  User, 
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -16,7 +16,7 @@ const PexelsNavbar = () => {
   const [photosDropdown, setPhotosDropdown] = useState(false);
   const [exploreDropdown, setExploreDropdown] = useState(false);
   const [moreDropdown, setMoreDropdown] = useState(false);
-  const [profileDropdown, setProfileDropdown] = useState(false); // New state for profile dropdown
+  const [profileDropdown, setProfileDropdown] = useState(false); 
   const [activeTab, setActiveTab] = useState("Leaderboard");
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
@@ -170,7 +170,7 @@ const PexelsNavbar = () => {
                 )}
               </div>
 
-              {/* More Dropdown */}
+          
               <div className="relative">
                 <button
                   onClick={() => setMoreDropdown(!moreDropdown)}
@@ -220,7 +220,7 @@ const PexelsNavbar = () => {
                       </button>
                     </div>
 
-                    {/* Social Icons */}
+                    
                     <div className="px-6 py-4 border-t border-gray-100 flex gap-4">
                       <Instagram className="w-5 h-5 text-gray-600" />
                       <Youtube className="w-5 h-5 text-gray-600" />
@@ -229,7 +229,6 @@ const PexelsNavbar = () => {
                 )}
               </div>
 
-              {/* Join */}
               <button className="bg-black text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors">
                 Join
               </button>
@@ -274,11 +273,7 @@ const PexelsNavbar = () => {
                 setActiveTab("Leaderboard");
                 navigate("/leaderboard");
               }}
-              className={`px-6 py-2 mx-1 rounded-full font-medium text-sm transition-all ${
-                activeTab === "Leaderboard"
-                  ? "bg-black text-white shadow-sm"
-                  : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
-              }`}
+              className={`px-6 py-2 mx-1 rounded-full font-medium text-sm transition-all`}
             >
               Leaderboard
             </button>
@@ -310,7 +305,7 @@ const PexelsNavbar = () => {
             setPhotosDropdown(false);
             setExploreDropdown(false);
             setMoreDropdown(false);
-            setProfileDropdown(false); // Close profile dropdown
+            setProfileDropdown(false); 
           }}
         />
       )}
