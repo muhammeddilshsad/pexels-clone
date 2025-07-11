@@ -54,6 +54,7 @@ export default function Login() {
       console.log("werghj", response);
 
       localStorage.setItem("user", JSON.stringify(userdata));
+      localStorage.setItem("token", userdata.token);
 
       navigate("/");
     } catch (error) {
@@ -71,11 +72,13 @@ export default function Login() {
       const response = await axiosInstance.post("/auth/login", {
         email: decoded.email,
         password: decoded.given_name,
+        
       });
       const userdata = response.data;
       localStorage.setItem("user", JSON.stringify(userdata));
+      localStorage.setItem("token", userdata.token);
       navigate("/");
-    } catch (error) {
+    }catch (error) {
       console.log("Google Login Failed:", error);
     }
   };
@@ -86,6 +89,7 @@ export default function Login() {
 
   const handleSocialLogin = (provider) => {
     console.log(`Login with ${provider}`);
+
   };
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">

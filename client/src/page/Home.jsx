@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Search,
-  ChevronDown,
-  Menu,
-  MoreHorizontal,
-  Download,
+import {Search,ChevronDown,Menu,MoreHorizontal,Download,
   Heart,
   Bell,
   Instagram,
@@ -24,6 +19,8 @@ export default function PexelsHomepage() {
   const [profileDropdown, setProfileDropdown] = useState(false);
   const [isLicenseDropdownOpen, setIsLicenseDropdownOpen] = useState(false);
   const [isLogged, setIsLogged] = useState(false);
+  const [notificationDropdown, setNotificationDropdown] = useState(false);
+
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -193,7 +190,10 @@ export default function PexelsHomepage() {
             {profileDropdown && (
               <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
                 <div className="py-2">
-                  <button className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" onClick={()=>navigate("/profile")}>
+                  <button
+                    className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                    onClick={() => navigate("/profile")}
+                  >
                     Your Profile
                   </button>
                   <button className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
@@ -217,6 +217,16 @@ export default function PexelsHomepage() {
               </div>
             )}
           </div>
+
+          <button
+                onClick={() => setNotificationDropdown(!notificationDropdown)}
+                className="relative w-10 h-10 flex items-center justify-center rounded-full bg-gray-800 hover:bg-gray-700"
+              >
+                <Bell className="w-5 h-5 text-white" />
+                
+                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+              </button>
+
 
           {user ? (
             <button
@@ -318,7 +328,7 @@ export default function PexelsHomepage() {
             Leaderboard
           </button>
           <button
-            onClick={() => setActiveTab("Challenges")}
+            onClick={() => navigate("/Challenges")}
             className={`px-6 py-2 rounded-full font-medium transition-all ${
               activeTab === "Challenges"
                 ? "bg-black text-white"
@@ -358,3 +368,10 @@ export default function PexelsHomepage() {
     </div>
   );
 }
+
+
+
+
+
+
+

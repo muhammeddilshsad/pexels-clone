@@ -65,7 +65,7 @@ const PexelsNavbar = () => {
                 )}
               </div>
 
-              {/* Search */}
+           
               <div className="flex-1 w-180">
                 <div className="relative w-full">
                   <input
@@ -80,9 +80,9 @@ const PexelsNavbar = () => {
               </div>
             </div>
 
-            {/* Right: Links, Dropdowns, Buttons */}
+            
             <div className="flex items-center space-x-6 relative">
-              {/* Explore */}
+     
               <div className="relative">
                 <button
                   onClick={() => setExploreDropdown(!exploreDropdown)}
@@ -124,13 +124,13 @@ const PexelsNavbar = () => {
                 License
               </a>
 
-              {/* Profile Dropdown */}
+            
               <div className="relative">
                 <button
                   onClick={() => setProfileDropdown(!profileDropdown)}
                   className="text-gray-600 hover:text-gray-800"
                 >
-                  <User className="w-5 h-5" /> {/* User icon for profile */}
+                  <User className="w-5 h-5" /> 
                 </button>
                 {profileDropdown && (
                   <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">

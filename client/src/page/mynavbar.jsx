@@ -15,11 +15,11 @@ function Mynavbar() {
     <>
    
     <div className="w-full bg-white shadow-sm">
-      {/* Main Navigation */}
+   
       <nav className="border-b border-gray-100">
         <div className="max-w-screen-xl mx-auto px-6">
           <div className="flex items-center justify-between h-16">
-            {/* Left: Logo, Dropdown, Search */}
+         
             <div className="flex items-center space-x-6">
               <h1 className="text-2xl font-bold italic text-black">pexels</h1>
 
@@ -58,7 +58,7 @@ function Mynavbar() {
                 )}
               </div>
 
-              {/* Search */}
+             
               <div className="flex-1 w-180">
                 <div className="relative w-full">
                   <input
@@ -73,9 +73,9 @@ function Mynavbar() {
               </div>
             </div>
 
-            {/* Right: Links, Dropdowns, Buttons */}
+            
             <div className="flex items-center space-x-6 relative">
-              {/* Explore */}
+          
               <div className="relative">
                 <button
                   onClick={() => setExploreDropdown(!exploreDropdown)}
@@ -166,7 +166,6 @@ function Mynavbar() {
                       </button>
                     </div>
 
-                    {/* Social Icons */}
                     <div className="px-6 py-4 border-t border-gray-100 flex gap-4">
                       <Instagram className="w-5 h-5 text-gray-600" />
                       <Youtube className="w-5 h-5 text-gray-600" />

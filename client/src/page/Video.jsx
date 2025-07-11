@@ -20,7 +20,6 @@ const Videos = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   console.log(user);
 
-
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -203,18 +202,23 @@ const Videos = () => {
 
       <div className="max-w-7xl mx-auto px-6">
         <nav className="flex justify-center space-x-12 py-2">
-          <button className="text-black px-6 py-2 rounded-full"onClick={home}>
+          <button className="text-black px-6 py-2 rounded-full" onClick={home}>
             Home
           </button>
           <button className="text-black px-6 py-2 rounded-full">Videos</button>
-          <button className="text-black  px-6 py-2 rounded-full" onClick={()=>navigate("/leaderboard")}>
+          <button
+            className="text-black  px-6 py-2 rounded-full"
+            onClick={() => navigate("/leaderboard")}
+          >
             Leaderboard
           </button>
-          
-          <button className="text-black px-6 py-2 rounded-full" onClick={()=>navigate("/Challenges")}>
+
+          <button
+            className="text-black px-6 py-2 rounded-full"
+            onClick={() => navigate("/Challenges")}
+          >
             Challenges
           </button>
-
         </nav>
       </div>
 

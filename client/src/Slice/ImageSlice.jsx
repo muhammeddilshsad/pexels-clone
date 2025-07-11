@@ -17,6 +17,8 @@ export const handleImagesubmit = createAsyncThunk(
   "image/upload",
   async (payload, { rejectWithValue }) => {
     try {
+      console.log('nihal',payload);
+
       const response = await axiosInstance.post("/image/upload", payload, {
         headers: {
           "Content-Type": "multipart/form-data",

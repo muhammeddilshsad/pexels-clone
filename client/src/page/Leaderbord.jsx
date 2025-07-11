@@ -1,26 +1,26 @@
+
 import React, { useEffect, useState } from "react";
 import { ChevronDown, Mail } from "lucide-react";
 import PexelsNavbar from "./navbar";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  checkFollowStatus,
-  gettopUploader,
-  toggleFollow,
-} from "../Slice/followSlice";
+import { checkFollowStatus, gettopUploader, toggleFollow } from "../Slice/followSlice";
+import MessageModal from "../page/messageModal"; 
+import { sendEmail } from "../Slice/ProfileSlice";
 
 const PexelsLeaderboard = () => {
   const [activeTab, setActiveTab] = useState("Most Viewed");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedRecipient, setSelectedRecipient] = useState(null);
   const dispatch = useDispatch();
 
-  const user = JSON.parse(localStorage.getItem('user'));
-
+  const user = JSON.parse(localStorage.getItem("user"));
 
   const { topUploaders, loading, error, folowstatus } = useSelector(
-    (state) => state.follow);
+    (state) => state.follow
+  );
 
   useEffect(() => {
     dispatch(gettopUploader());
-    
   }, [dispatch]);
 
   useEffect(() => {
@@ -30,7 +30,7 @@ const PexelsLeaderboard = () => {
       });
     }
   }, [topUploaders, dispatch]);
- 
+
   const handleFollow = async (usertofollow) => {
     try {
       const toBackend = { targetUserId: usertofollow };
@@ -40,14 +40,26 @@ const PexelsLeaderboard = () => {
       console.error(error);
     }
   };
+  useEffect(()=>{
+    
+  })
+
+  const handleOpenModal = (recipient) => {
+    setSelectedRecipient(recipient);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedRecipient(null);
+  };
+  
 
   return (
     <div className="min-h-screen bg-white">
       <PexelsNavbar />
-     
 
       <main className="max-w-7xl mx-auto px-4 py-8 mt-4">
-     
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             Community Favorites
@@ -57,7 +69,6 @@ const PexelsLeaderboard = () => {
           </p>
         </div>
 
- 
         <div className="flex justify-between items-center mb-8">
           <div className="flex space-x-4">
             {["Most Viewed", "Most Active"].map((tab) => (
@@ -69,7 +80,7 @@ const PexelsLeaderboard = () => {
                     ? "bg-black text-white"
                     : "text-gray-600 hover:text-black"
                 }`}
-              >
+              > 
                 {tab}
               </button>
             ))}
@@ -81,10 +92,8 @@ const PexelsLeaderboard = () => {
           </div>
         </div>
 
-  
         {error && <p className="text-center text-red-500">Error: {error}</p>}
 
-        
         <div className="space-y-8">
           {(topUploaders || []).map((user, index) => {
             const avatar = `https://i.pravatar.cc/150?u=${user.email}`;
@@ -93,19 +102,17 @@ const PexelsLeaderboard = () => {
 
             return (
               <div key={user._id} className="flex items-center space-x-6">
-           
                 <div className="text-4xl font-bold text-gray-900 w-8">
                   {index + 1}
                 </div>
 
-           
                 <div className="flex items-center space-x-4 flex-1 min-w-0">
-               
                   <img
                     src={avatar}
                     alt={`${user.name}'s avatar`}
                     className="w-16 h-16 rounded-full object-cover"
                   />
+
                   <div className="min-w-0">
                     <h3 className="text-xl font-semibold text-gray-900">
                       {user.name}
@@ -124,12 +131,16 @@ const PexelsLeaderboard = () => {
                       >
                         {folowstatus[user._id] ? "Following" : "Follow"}
                       </button>
-                      <button className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                      <button
+                        onClick={() => handleOpenModal(user)}
+                        className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                      >
                         <Mail size={16} />
                       </button>
                     </div>
                   </div>
                 </div>
+
                 <div className="flex space-x-2">
                   {images.slice(0, 3).map((image, idx) => (
                     <img
@@ -139,8 +150,6 @@ const PexelsLeaderboard = () => {
                       className="w-32 h-24 object-cover rounded-lg"
                     />
                   ))}
-
-            
                   <div className="w-32 h-24 bg-black rounded-lg flex flex-col items-center justify-center text-white">
                     <span className="text-2xl font-bold">+{totalMedia}</span>
                     <span className="text-xs opacity-80">See All Media →</span>
@@ -151,6 +160,12 @@ const PexelsLeaderboard = () => {
           })}
         </div>
       </main>
+
+      <MessageModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        recipient={selectedRecipient}
+      />
     </div>
   );
 };

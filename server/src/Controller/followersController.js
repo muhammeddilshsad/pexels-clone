@@ -5,7 +5,7 @@ import User from "../Model/Image.js";
 
 export const getTopUploaders = async (req, res) => {
   try {
-    const loggedInUserId = req.user.id; 
+    const loggedInUserId = req.user.id;
 
     const topUsers = await Image.aggregate([
       {
@@ -16,7 +16,7 @@ export const getTopUploaders = async (req, res) => {
       },
       {
         $match: {
-          _id: { $ne: new mongoose.Types.ObjectId(loggedInUserId) }, 
+          _id: { $ne: new mongoose.Types.ObjectId(loggedInUserId) },
         },
       },
       {
@@ -64,34 +64,36 @@ export const getTopUploaders = async (req, res) => {
 
     res.status(200).json(topUsers);
   } catch (error) {
-    console.log(error)
-    res
-      .status(500)
-      .json({ message: "Error fetching top uploaders", error });
+    console.log(error);
+    res.status(500).json({ message: "Error fetching top uploaders", error });
   }
 };
 
-
 export const toggleFollow = async (req, res, next) => {
   console.log("Toggle Follow Request Body:", req.body);
-  
+
   try {
     const { targetUserId } = req.body;
-     const followerId = req.user.id;
- 
+    const followerId = req.user.id;
+
     if (followerId === targetUserId) {
       return next(new CustomError("You cannot follow yourself", 400));
     }
 
-    const existingFollow = await Follow.findOne({ follower: followerId, following: targetUserId });
+    const existingFollow = await Follow.findOne({
+      follower: followerId,
+      following: targetUserId,
+    });
 
     if (existingFollow) {
       await Follow.deleteOne({ follower: followerId, following: targetUserId });
       return res.status(200).json({ message: "Unfollowed successfully" });
     }
 
-
-    const newFollow = new Follow({ follower: followerId, following: targetUserId });
+    const newFollow = new Follow({
+      follower: followerId,
+      following: targetUserId,
+    });
     await newFollow.save();
 
     res.status(200).json({ message: "Followed successfully" });
@@ -99,8 +101,6 @@ export const toggleFollow = async (req, res, next) => {
     next(err);
   }
 };
-
-
 
 export const getFollowers = async (req, res) => {
   try {
@@ -122,7 +122,9 @@ export const getFollowingImages = async (req, res) => {
   try {
     const userId = req.body.follower;
 
-    const following = await Follow.find({ follower: userId }).select("following");
+    const following = await Follow.find({ follower: userId }).select(
+      "following"
+    );
 
     const followingIds = following.map((f) => f.following);
 
@@ -137,24 +139,25 @@ export const getFollowingImages = async (req, res) => {
   }
 };
 
-
 export const getFollowingImagesByUser = async (req, res) => {
   try {
-    const loggedInUserId = req.user.id; // from JWT
-    const targetUserId = req.params.userId; // user whose images you want to see
+    const loggedInUserId = req.user.id;
+    const targetUserId = req.params.userId;
 
- 
     const isFollowing = await Follow.findOne({
       follower: loggedInUserId,
       following: targetUserId,
     });
 
     if (!isFollowing) {
-      return res.status(403).json({ message: "You are not following this user." });
+      return res
+        .status(403)
+        .json({ message: "You are not following this user." });
     }
 
-    // 2. Get images uploaded by the target user
-    const images = await Image.find({ uploadedBy: targetUserId }).sort({ createdAt: -1 });
+    const images = await Image.find({ uploadedBy: targetUserId }).sort({
+      createdAt: -1,
+    });
 
     res.status(200).json(images);
   } catch (error) {
@@ -167,11 +170,10 @@ export const getFollowingImagesByUser = async (req, res) => {
 
 
 
-
-export const getFollowing = async (req, res) => {
+ export const getFollowing = async (req, res) => {
   try {
     const userId = req.user.id;
-    console.log()
+    console.log();
 
     const followingData = await Follow.find({ follower: userId }).populate(
       "following",
@@ -179,7 +181,7 @@ export const getFollowing = async (req, res) => {
     );
 
     const followingUsers = followingData.map((follow) => follow.following);
-    console.log(followingUsers)
+    console.log(followingUsers);
 
     res.status(200).json(followingUsers);
   } catch (error) {
@@ -191,17 +193,17 @@ export const getFollowing = async (req, res) => {
 };
 
 
-
-
 export const getFollowStatus = async (req, res, next) => {
   try {
     const followerId = req.user.id;
     const followingId = req.params.id;
-    console.log("follow check",followerId,followingId)
-    const follow = await Follow.findOne({ follower: followerId, following: followingId });
+    console.log("follow check", followerId, followingId);
+    const follow = await Follow.findOne({
+      follower: followerId,
+      following: followingId,
+    });
     res.status(200).json({ isFollowing: !!follow });
   } catch (err) {
     next(err);
   }
 };
-

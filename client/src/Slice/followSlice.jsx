@@ -11,25 +11,42 @@ export const toggleFollow = createAsyncThunk("/follow", async (userData) => {
   return res.data;
 });
 
-export const  checkFollowStatus = createAsyncThunk("/check", async (userId) => {
+export const checkFollowStatus = createAsyncThunk("/check", async (userId) => {
   const res = await axiosInstance.get(`/follow/status/${userId}`);
   return { userId, isFollowing: res.data.isFollowing };
-
 });
-
-export const getFollowingUsers = createAsyncThunk("/getFollowingUsers", async () => {
+export const getFollowingUsers = createAsyncThunk(
+  "/getFollowingUsers",
+  async () => {
     try {
       const res = await axiosInstance.get(`/follow/followingg`);
-      console.log(res.data)
-      
-      return res.data;
+      console.log(res.data);
 
+      return res.data;
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 );
 
+export const getUserDetails = createAsyncThunk(
+  "user/fetchUserDetails",
+  async (id, { rejectWithValue }) => {
+    try {
+      const token = JSON.parse(localStorage.getItem("user"))?.token;
+      const response = await axiosInstance.get(`/auth/getUserDetailsBy/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Something went wrong"
+      );
+    }
+  }
+);
 
 const followSlice = createSlice({
   name: "follow",
@@ -38,7 +55,8 @@ const followSlice = createSlice({
     loading: false,
     error: null,
     folowstatus: {},
-    followingList: [], 
+    followingList: [],
+    user: null,
   },
   extraReducers: (builder) => {
     builder
@@ -77,11 +95,23 @@ const followSlice = createSlice({
 
       .addCase(getFollowingUsers.fulfilled, (state, action) => {
         state.loading = false;
-        state.followingList = action.payload; 
+        state.followingList = action.payload;
       })
       .addCase(getFollowingUsers.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
+      })
+      .addCase(getUserDetails.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getUserDetails.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+      })
+      .addCase(getUserDetails.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });

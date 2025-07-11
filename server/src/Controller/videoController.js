@@ -5,8 +5,7 @@ import Video from "../Model/Videos.js";
 export const addVideo = async (req, res) => {
   
   try {
-    console.log(req.body)
-    console.log(req);
+   
     
     const video = req.file?.path;
     const { title, description, category, tags } = req.body;
@@ -14,6 +13,7 @@ export const addVideo = async (req, res) => {
     if (!title || !video) {
       return res.status(400).json({ message: 'Title and video file are required' });
     }
+console.log('sdfysuyjw',req.user);
 
     const newVideo = new Video({
       title,
@@ -31,7 +31,6 @@ export const addVideo = async (req, res) => {
     res.status(500).json({ message: 'Failed to upload video', error: error.message });
   }
 };
-
 
 
 export const getAllVideos = async (req, res) => {

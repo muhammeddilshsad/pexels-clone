@@ -22,7 +22,7 @@ app.use(express.json());
 
 app.use("/api/auth", authRouter);
 app.use("/api/image", imageRoute);
-app.use("/api/follow",FollowRoute)
+app.use("/api/follow",FollowRoute);
 
 mongoose
   .connect(process.env.MONGO_URL)

@@ -16,7 +16,6 @@ const dynamicStorage = new CloudinaryStorage({
   cloudinary,
   params: async (req, file) => {
     const isVideo = file.mimetype.startsWith("video/");
-    console.log(isVideo);
     
     return {
       folder: isVideo ? "videos" : "images",

@@ -18,7 +18,7 @@ console.log(req.body)
 export const login=async (req,res)=>{
 
     const {email,password}=req.body
-    const user= await User.findOne({email})
+    const user= await User.findOne({email:email})
     const token=generateToken(user)
     console.log(user)
 
@@ -29,6 +29,8 @@ export const login=async (req,res)=>{
             token:token,
             isBlocked:user.isBlocked,
         });
+        
+
     }else{
         res.status(401).json({message:"invalid password"})
     }

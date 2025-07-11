@@ -11,7 +11,7 @@ import { protect } from "../Middleware/auth.js";
 
 const imageRoute = express
   .Router()
-  .post("/addImage", addImage)
+  // .post("/addImage", addImage)
   .get("/getAllimage", getAllimage)
   .post("/upload",protect, upload.single("imageUrl"), addImage)
   .get("/serchImage", serchImage)

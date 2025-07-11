@@ -9,8 +9,7 @@ import Mynavbar from "./mynavbar";
 
 const MediaUpload = ({ type = "image" }) => {
   const isVideo = type === "video";
-  
-  
+
   const [filePreview, setFilePreview] = useState(null);
   const [file, setFile] = useState(null);
   const [isDragOver, setIsDragOver] = useState(false);
@@ -126,7 +125,6 @@ const MediaUpload = ({ type = "image" }) => {
       <Mynavbar />
       <div className="min-h-full bg-gray-50 flex justify-center p-6">
         <div className="w-full max-w-2xl bg-white rounded-2xl shadow-sm p-8">
-          
           <div className="text-center mb-12">
             <h1 className="text-3xl font-medium text-gray-900 mb-4">
               Share your {isVideo ? "videos" : "photos"} and videos, and let the
@@ -167,7 +165,6 @@ const MediaUpload = ({ type = "image" }) => {
               </div>
             ) : (
               <div className="text-center mb-6">
-                {/* Icon Display */}
                 <div className="flex justify-center mb-6">
                   <div className="flex space-x-2">
                     <div className="w-16 h-16 bg-green-100 rounded-xl flex items-center justify-center">
@@ -182,13 +179,11 @@ const MediaUpload = ({ type = "image" }) => {
                   </div>
                 </div>
 
-                {/* Upload Text */}
                 <h2 className="text-2xl font-medium text-gray-900 mb-2">
                   Drag and drop
                 </h2>
                 <p className="text-xl text-gray-900 mb-6">to upload, or</p>
 
-                {/* Browse Button and Upload Area */}
                 <label
                   className={`relative block w-full h-32 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-200 ${
                     isDragOver
@@ -223,7 +218,6 @@ const MediaUpload = ({ type = "image" }) => {
             )}
           </div>
 
-          {/* Form Fields */}
           {(filePreview || file) && (
             <div className="space-y-4">
               <input
@@ -300,5 +294,3 @@ const MediaUpload = ({ type = "image" }) => {
 };
 
 export default MediaUpload;
-
-
