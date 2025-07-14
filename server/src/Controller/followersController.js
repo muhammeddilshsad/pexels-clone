@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
 import Follow from "../Model/Following.js";
 import Image from "../Model/Image.js";
-import User from "../Model/Image.js";
+import User from "../Model/User.js";
+import Notification from "../Model/Notification.js";
 
 export const getTopUploaders = async (req, res) => {
   try {
@@ -69,15 +70,65 @@ export const getTopUploaders = async (req, res) => {
   }
 };
 
-export const toggleFollow = async (req, res, next) => {
-  console.log("Toggle Follow Request Body:", req.body);
+// export const toggleFollow = async (req, res, next) => {
+//   console.log("Toggle Follow Request Body:", req.body);
 
+//   try {
+//     const { targetUserId } = req.body;
+//     const followerId = req.user.id;
+
+//     if (followerId === targetUserId) {
+//       return next(new CustomError("You cannot follow yourself", 400));
+//     }
+
+//     const existingFollow = await Follow.findOne({
+//       follower: followerId,
+//       following: targetUserId,
+//     });
+
+//     if (existingFollow) {
+//       await Follow.deleteOne({ follower: followerId, following: targetUserId });
+//       return res.status(200).json({ message: "Unfollowed successfully" });
+//     }
+
+//     const newFollow = new Follow({
+//       follower: followerId,
+//       following: targetUserId,
+//     });
+//     await newFollow.save();
+
+//     res.status(200).json({ message: "Followed successfully" });
+//   } catch (err) {
+//     next(err);
+//   }
+// };
+
+
+export const toggleFollow = async (req, res) => {
   try {
     const { targetUserId } = req.body;
     const followerId = req.user.id;
+    const io = req.app.get("io");
+
+    console.log("Follower ID:", followerId, "Target User ID:", targetUserId);
+
+    if (!mongoose.Types.ObjectId.isValid(targetUserId) || !mongoose.Types.ObjectId.isValid(followerId)) {
+      return res.status(400).json({ message: "Invalid user ID" });
+    }
 
     if (followerId === targetUserId) {
-      return next(new CustomError("You cannot follow yourself", 400));
+      return res.status(400).json({ message: "You cannot follow yourself" });
+    }
+
+    const follower = await User.findOne({ _id: followerId });
+    if (!follower) {
+      return res.status(404).json({ message: "Follower not found" });
+    }
+
+    const targetUser = await User.findById(targetUserId);
+    if (!targetUser) {
+      console.error(`Target user not found for ID: ${targetUserId}`);
+      return res.status(404).json({ message: "Target user not found" });
     }
 
     const existingFollow = await Follow.findOne({
@@ -87,6 +138,17 @@ export const toggleFollow = async (req, res, next) => {
 
     if (existingFollow) {
       await Follow.deleteOne({ follower: followerId, following: targetUserId });
+      const notification = new Notification({
+        recipient: targetUserId,
+        sender: followerId,
+        type: "unfollow",
+        message: `${follower.name} has unfollowed you.`,
+      });
+      await notification.save();
+      io.to(targetUserId).emit("newNotification", {
+        ...notification.toObject(),
+        sender: { name: follower.name, email: follower.email },
+      });
       return res.status(200).json({ message: "Unfollowed successfully" });
     }
 
@@ -95,10 +157,21 @@ export const toggleFollow = async (req, res, next) => {
       following: targetUserId,
     });
     await newFollow.save();
-
+    const notification = new Notification({
+      recipient: targetUserId,
+      sender: followerId,
+      type: "follow",
+      message: `${follower.name} has followed you.`,
+    });
+    await notification.save();
+    io.to(targetUserId).emit("newNotification", {
+      ...notification.toObject(),
+      sender: { name: follower.name, email: follower.email },
+    });
     res.status(200).json({ message: "Followed successfully" });
   } catch (err) {
-    next(err);
+    console.error("Error in toggleFollow:", err);
+    res.status(500).json({ message: "Error toggling follow", error: err.message });
   }
 };
 
@@ -207,3 +280,24 @@ export const getFollowStatus = async (req, res, next) => {
     next(err);
   }
 };
+
+
+export const getNotifications = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const notifications = await Notification.find({ recipient: userId })
+      .populate("sender", "name email")
+      .sort({ createdAt: -1 })
+      .limit(20); 
+
+    res.status(200).json(notifications);
+  } catch (error) {
+    res.status(500).json({
+      message: "Error fetching notifications",
+      error: error.message,
+    });
+  }
+};
+
+

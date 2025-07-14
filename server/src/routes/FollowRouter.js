@@ -1,5 +1,5 @@
 import express, { Router } from "express"
-import {  getFollowing, getFollowingImages, getFollowingImagesByUser, getFollowStatus, getTopUploaders, toggleFollow } from "../Controller/followersController.js"
+import {  getFollowing, getFollowingImages, getFollowingImagesByUser, getFollowStatus, getNotifications, getTopUploaders, toggleFollow } from "../Controller/followersController.js"
 import { protect } from "../Middleware/auth.js"
 
 
@@ -15,6 +15,7 @@ FollowRoute
 .get("/status/:id",protect,getFollowStatus)
 .get("/followingg",protect,getFollowing)
 .get("/followingimages",protect,getFollowingImages)
+.get("/notification",protect,getNotifications)
 
 
 

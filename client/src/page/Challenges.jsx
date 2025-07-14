@@ -63,7 +63,7 @@ function PexelsChallengesPage() {
               <div className="flex items-center mb-6">
                 <div className="flex items-center bg-red-50 text-red-600 px-4 py-2 rounded-full text-sm font-medium">
                   <div className="w-2 h-2 bg-red-500 rounded-full mr-2"></div>
-                 29 days left
+                 17 days left
                 </div>
               </div>
 

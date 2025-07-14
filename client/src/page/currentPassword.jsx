@@ -17,6 +17,7 @@ function ChangePasswordModal  ()  {
     }
     console.log("Change password clicked");
 
+
   };
 
   return (
@@ -48,7 +49,6 @@ function ChangePasswordModal  ()  {
             </div>
           </div>
 
-          {/* New Password */}
           <div>
             <label className="block text-gray-700 font-medium mb-1">
               New password <span className="text-red-500">*</span>
@@ -70,7 +70,7 @@ function ChangePasswordModal  ()  {
             </div>
           </div>
 
-          {/* Buttons */}
+     
           <div className="flex justify-end items-center gap-4 pt-4">
             <button
               type="button"
@@ -88,7 +88,7 @@ function ChangePasswordModal  ()  {
         </form>
       </div>
     </div>
-              </>
+       </>
   );
 };
 

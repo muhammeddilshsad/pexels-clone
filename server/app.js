@@ -2,13 +2,36 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
+import { Server } from "socket.io";
+import http from "http";
 import authRouter from "./src/routes/authRouter.js";
 import imageRoute from "./src/routes/imageRouter.js";
-import Following from "./src/Model/Following.js";
 import FollowRoute from "./src/routes/FollowRouter.js";
+import notificationRoute from "./src/routes/FollowRouter.js"; 
 
 dotenv.config();
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
+
+app.set("io", io); // Make Socket.IO accessible to routes
+
+io.on("connection", (socket) => {
+  console.log("A user connected:", socket.id);
+  socket.on("join", (userId) => {
+    socket.join(userId);
+    console.log(`User ${userId} joined room`);
+  });
+  socket.on("disconnect", () => {
+    console.log("User disconnected:", socket.id);
+  });
+});
 
 app.use(
   cors({
@@ -22,13 +45,14 @@ app.use(express.json());
 
 app.use("/api/auth", authRouter);
 app.use("/api/image", imageRoute);
-app.use("/api/follow",FollowRoute);
+app.use("/api/follow", FollowRoute);
+
 
 mongoose
   .connect(process.env.MONGO_URL)
-  .then(() => console.log("Mongodb Connected"))
+  .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.error(err));
 
-app.listen(process.env.PORT, () => {
-  console.log(`server is ruuning ${process.env.PORT}`);
+server.listen(process.env.PORT, () => {
+  console.log(`Server is running on port ${process.env.PORT}`);
 });

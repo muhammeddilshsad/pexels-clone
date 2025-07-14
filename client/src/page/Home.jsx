@@ -7,10 +7,15 @@ import {Search,ChevronDown,Menu,MoreHorizontal,Download,
   User,
 } from "lucide-react";
 import MasnoryGrid from "./Masnorygrid";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import MasnoryModal from "./ImageModal";
 import { fetch, serchImage } from "../Slice/ImageSlice";
+import { getNotifications } from "../Slice/followSlice";
 import { useDispatch, useSelector } from "react-redux";
+import io from "socket.io-client";
+import { toast } from "react-toastify";
+
+const socket = io("http://localhost:5000", { withCredentials: true });
 
 export default function PexelsHomepage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -18,26 +23,48 @@ export default function PexelsHomepage() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [profileDropdown, setProfileDropdown] = useState(false);
   const [isLicenseDropdownOpen, setIsLicenseDropdownOpen] = useState(false);
-  const [isLogged, setIsLogged] = useState(false);
   const [notificationDropdown, setNotificationDropdown] = useState(false);
-
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
   const user = JSON.parse(localStorage.getItem("user"));
-  console.log(user);
-  const upload = () => {
-    navigate("/upload/image");
-  };
+  const {
+    loading: imageLoading,
+    image,
+    error: imageError,
+    serchedImage,
+  } = useSelector((state) => state.images);
+  const {
+    notifications,
+    loading: notificationLoading,
+    error: notificationError,
+  } = useSelector((state) => state.follow);
+  console.log(notifications);
 
   useEffect(() => {
     dispatch(fetch());
-  }, []);
+    if (user?.id && user?.token) {
+      socket.emit("join", user.id);
+      socket.on(
+        "newNotification",
+        (notification) => {
+          console.log("New notification received:", notification);
+          dispatch(addNotification(notification));
+          toast.info(notification.message);
+        },
+        [dispatch]
+      );
+      return () => socket.off("newNotification");
+    }
+  }, [user?.id, user?.token, dispatch]);
 
-  const { loading, image, error, serchedImage } = useSelector(
-    (state) => state.images
-  );
+  useEffect(() => {
+    dispatch(getNotifications());
+  }, [dispatch]);
+
+  const upload = () => {
+    navigate("/upload/image");
+  };
 
   const handleImageClick = (img) => {
     setSelectedImage(img);
@@ -45,10 +72,6 @@ export default function PexelsHomepage() {
 
   const handleCloseModal = () => {
     setSelectedImage(null);
-  };
-
-  const onclick = () => {
-    navigate("/register");
   };
 
   return (
@@ -65,10 +88,12 @@ export default function PexelsHomepage() {
           </div>
 
           <div className="relative">
-            <button className="cursor-pointer hover:opacity-80 transition-opacity">
+            <button
+              className="cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={() => setIsLicenseDropdownOpen(!isLicenseDropdownOpen)}
+            >
               License
             </button>
-
             {isLicenseDropdownOpen && (
               <div className="absolute top-full right-0 mt-2 w-80 bg-white rounded-2xl shadow-lg z-50 overflow-hidden">
                 <div className="py-4">
@@ -76,7 +101,6 @@ export default function PexelsHomepage() {
                     <button
                       onClick={() => {
                         localStorage.clear();
-                        setIsLogged(false);
                         navigate("/login");
                       }}
                       className="w-full px-6 py-4 text-left text-gray-700 hover:bg-gray-50 transition-colors text-base font-medium"
@@ -91,63 +115,43 @@ export default function PexelsHomepage() {
                       Log in
                     </button>
                   )}
-
                   <button
                     className="w-full px-6 py-4 text-left text-gray-700 hover:bg-gray-50 transition-colors text-base font-medium"
-                    onClick={() => {
-                      console.log("Clicked: Image & Video API");
-                      setIsLicenseDropdownOpen(false);
-                    }}
+                    onClick={() => setIsLicenseDropdownOpen(false)}
                   >
                     Image & Video API
                   </button>
                   <button
                     className="w-full px-6 py-4 text-left text-gray-700 hover:bg-gray-50 transition-colors text-base font-medium"
-                    onClick={() => {
-                      console.log("Clicked: Apps & Plugins");
-                      setIsLicenseDropdownOpen(false);
-                    }}
+                    onClick={() => setIsLicenseDropdownOpen(false)}
                   >
                     Apps & Plugins
                   </button>
                   <button
                     className="w-full px-6 py-4 text-left text-gray-700 hover:bg-gray-50 transition-colors text-base font-medium"
-                    onClick={() => {
-                      console.log("Clicked: Help Center");
-                      setIsLicenseDropdownOpen(false);
-                    }}
+                    onClick={() => setIsLicenseDropdownOpen(false)}
                   >
                     Help Center
                   </button>
                   <button
                     className="w-full px-6 py-4 text-left text-gray-700 hover:bg-gray-50 transition-colors text-base font-medium"
-                    onClick={() => {
-                      console.log("Clicked: Report Content");
-                      setIsLicenseDropdownOpen(false);
-                    }}
+                    onClick={() => setIsLicenseDropdownOpen(false)}
                   >
                     Report Content
                   </button>
                   <button
                     className="w-full px-6 py-4 text-left text-gray-700 hover:bg-gray-50 transition-colors text-base font-medium"
-                    onClick={() => {
-                      console.log("Clicked: Partnerships");
-                      setIsLicenseDropdownOpen(false);
-                    }}
+                    onClick={() => setIsLicenseDropdownOpen(false)}
                   >
                     Partnerships
                   </button>
                   <button
                     className="w-full px-6 py-4 text-left text-gray-700 hover:bg-gray-50 transition-colors text-base font-medium"
-                    onClick={() => {
-                      console.log("Clicked: Imprint & Terms");
-                      setIsLicenseDropdownOpen(false);
-                    }}
+                    onClick={() => setIsLicenseDropdownOpen(false)}
                   >
                     Imprint & Terms
                   </button>
                 </div>
-
                 <div className="px-6 py-4 border-t border-gray-100">
                   <div className="flex items-center gap-4">
                     <button className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
@@ -175,9 +179,12 @@ export default function PexelsHomepage() {
             className="w-5 h-5 cursor-pointer"
             onClick={() => setIsLicenseDropdownOpen(!isLicenseDropdownOpen)}
           >
-            ...
+            <MoreHorizontal className="w-5 h-5" />
           </button>
-          <button className="bg-white text-black px-6 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors">
+          <button
+            className="bg-white text-black px-6 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors"
+            onClick={() => navigate("/register")}
+          >
             Join
           </button>
           <div className="relative">
@@ -196,17 +203,21 @@ export default function PexelsHomepage() {
                   >
                     Your Profile
                   </button>
+                  <button
+                    className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                    onClick={() => navigate("/following")}
+                  >
+                    Following
+                  </button>
                   <button className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                     Your Collections
                   </button>
                   <button className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                     Settings
                   </button>
-
                   <button
                     onClick={() => {
                       localStorage.clear();
-                      setIsLogged(false);
                       navigate("/login");
                     }}
                     className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
@@ -218,31 +229,81 @@ export default function PexelsHomepage() {
             )}
           </div>
 
-          <button
-                onClick={() => setNotificationDropdown(!notificationDropdown)}
-                className="relative w-10 h-10 flex items-center justify-center rounded-full bg-gray-800 hover:bg-gray-700"
-              >
-                <Bell className="w-5 h-5 text-white" />
-                
-                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-              </button>
+          <div className="relative">
+            <button
+              onClick={() => setNotificationDropdown(!notificationDropdown)}
+              className="relative w-10 h-10 flex items-center justify-center rounded-full bg-gray-800 hover:bg-gray-700"
+              aria-expanded={notificationDropdown}
+              aria-label="Toggle notifications"
+            >
+              <Bell className="w-5 h-5 text-white" />
+              {notifications.filter((n) => !n.read).length > 0 && (
+                <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-red-500"></span>
+              )}
+            </button>
+            {notificationDropdown && (
+              <div className="absolute right-0 top-full mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                <div className="py-2">
+                  <div className="px-4 py-3 text-sm text-gray-700 border-b border-gray-100">
+                    <span className="font-medium">Notifications</span>
+                  </div>
+                  {notificationLoading ? (
+                    <div className="px-4 py-3 text-sm text-gray-700">
+                      <p>Loading notifications...</p>
+                    </div>
+                  ) : notificationError ? (
+                    <div className="px-4 py-3 text-sm text-red-500">
+                      <p>{notificationError}</p>
+                    </div>
+                  ) : notifications.length > 0 ? (
+                    notifications.map((notification) => (
+                      <div
+                        key={notification._id}
+                        className="px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer"
+                      >
+                        <p className="font-medium">{notification.message}</p>
+                        <p className="text-xs text-gray-500">
+                          {new Date(notification.createdAt).toLocaleString()}
+                        </p>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="px-4 py-3 text-sm text-gray-700">
+                      <p>No notifications yet</p>
+                    </div>
+                  )}
+                  <button
+                    className="w-full text-left px-4 py-2 text-sm text-blue-600 hover:bg-gray-50"
+                    onClick={() => {
+                      navigate("/notifications");
+                      setNotificationDropdown(false);
+                    }}
+                  >
+                    View all notifications
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
 
-
-          {user ? (
+          {user && (
             <button
               onClick={upload}
               className="bg-white text-black px-6 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors"
             >
               Upload
             </button>
-          ) : null}
+          )}
         </div>
       </header>
 
-      {isLicenseDropdownOpen && (
+      {(isLicenseDropdownOpen || notificationDropdown) && (
         <div
           className="fixed inset-0 z-10"
-          onClick={() => setIsLicenseDropdownOpen(false)}
+          onClick={() => {
+            setIsLicenseDropdownOpen(false);
+            setNotificationDropdown(false);
+          }}
         ></div>
       )}
 
@@ -268,7 +329,6 @@ export default function PexelsHomepage() {
                 <span className="text-gray-600 text-sm font-medium">
                   Photos
                 </span>
-
                 <ChevronDown className="w-4 h-4 text-gray-400 ml-2" />
               </div>
               <div className="flex-1 relative">
@@ -350,7 +410,7 @@ export default function PexelsHomepage() {
             </div>
           </div>
 
-          {loading ? (
+          {imageLoading ? (
             <div className="flex justify-center items-center py-20">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
             </div>
@@ -368,10 +428,3 @@ export default function PexelsHomepage() {
     </div>
   );
 }
-
-
-
-
-
-
-
