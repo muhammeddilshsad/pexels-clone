@@ -17,14 +17,14 @@ export const handleImagesubmit = createAsyncThunk(
   "image/upload",
   async (payload, { rejectWithValue }) => {
     try {
-      console.log('nihal',payload);
+      console.log("nihal", payload);
 
       const response = await axiosInstance.post("/image/upload", payload, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-      return response.data; 
+      return response.data;
     } catch (error) {
       toast.error("Failed to submit content.");
       return rejectWithValue(error.response?.data || error.message);
@@ -38,7 +38,8 @@ export const serchImage = createAsyncThunk(
     console.log("qqqqqqqqqq", searchQuery);
 
     try {
-      const response = await axiosInstance.get( `/image/serchImage?query=${searchQuery}`
+      const response = await axiosInstance.get(
+        `/image/serchImage?query=${searchQuery}`
       );
       console.log(response.data);
 
@@ -58,7 +59,11 @@ const imageSlice = createSlice({
     error: false,
     loading: false,
   },
-  reducers: {},
+  reducers: {
+    clearSearchResults: (state) => {
+      state.serchedImage = [];
+    },
+  },
   extraReducers: (Builder) => {
     Builder.addCase(fetch.pending, (state, action) => {
       state.loading = true;
@@ -92,4 +97,6 @@ const imageSlice = createSlice({
     });
   },
 });
+
 export default imageSlice.reducer;
+export const { clearSearchResults } = imageSlice.actions;

@@ -33,7 +33,7 @@ function App() {
         <Route path="/videoModal" element={<VideoModal />} />
         <Route path="/messgemodal" element={<MessageModal/>}/>
         <Route path="/upload/image" element={<MediaUpload type="image" />} />
-        <Route path="/upload/video" element={<MediaUpload type="video" />} />
+        <Route path="/upload/video" element={<MediaUpload type="video" />} />+
         <Route path="/leaderboard" element={<PexelsLeaderboard />} />
         <Route path="/navabr" element={<PexelsNavbar />} />
         <Route path="/Challenges" element={<PexelsChallengesPage />} />

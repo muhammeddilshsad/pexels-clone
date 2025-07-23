@@ -46,7 +46,6 @@ export const getAllVideos = async (req, res) => {
 export const searchVideos = async (req, res) => {
   try {
     const { query } = req.query;
-
     if (!query) {
       return res.status(400).json({ message: "Search query is required" });
     }
@@ -57,7 +56,7 @@ export const searchVideos = async (req, res) => {
       $or: [
         { title: { $regex: searchRegex } },
         { category: { $regex: searchRegex } },
-        { tags: { $elemMatch: { $regex: searchRegex } } },
+        
       ],
     });
 

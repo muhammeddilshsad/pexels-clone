@@ -4,52 +4,59 @@ import Image from "../Model/Image.js";
 import Video from "../Model/Videos.js";
 import { upload } from "../Middleware/imageUpload.js";
 
+
 export const updateProfile = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { firstName, lastName, paypalEmail,email } = req.body;
-
+    const { firstName, email } = req.body;
+    
     const updatedFields = {
-      name:firstName,
+      name: firstName,
       email,
     };
-    console.log(req.user.id);
+    console.log(updatedFields)
+
     if (req.file) {
       updatedFields.profilePhoto = req.file.path;
     }
 
-    const updatedUser = await User.findByIdAndUpdate(userId, updatedFields, {
-      new: true,
-    });
-console.log(updatedUser)
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      updatedFields,
+      { new: true }
+    );
+    console.log(updatedUser)
+
     res.status(200).json({
+      profilePhoto: updatedUser.profilePhoto,
       message: "Profile updated successfully",
       user: updatedUser,
     });
+    
   } catch (error) {
     res.status(500).json({ message: "Failed to update profile", error });
   }
 };
 
+
+
+
 export const changePassword = async (req, res) => {
   try {
-    const userId = req.user._id;
+    const user = await User.findById(req.user.id);
     const { currentPassword, newPassword } = req.body;
-
-    const user = await User.findById(userId);
 
     const isMatch = await bcrypt.compare(currentPassword, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Current password is incorrect" });
+      return res.status(400).json({ message: "Incorrect current password" });
     }
 
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(newPassword, salt);
-
+    user.password = newPassword
     await user.save();
 
-    res.status(200).json({ message: "Password changed successfully" });
+    res.status(200).json({ message: "Password updated successfully" });
   } catch (error) {
+    console.error("Change Password Error:", error);
     res.status(500).json({ message: "Failed to change password", error });
   }
 };
@@ -83,7 +90,7 @@ export const getUserDetailsById = async (req, res) => {
   try {
     const userId = req.params.id;
 
-   
+
     const user = await User.findById(userId).select("-password");
 
     if (!user) {
@@ -115,6 +122,7 @@ export const getUploadsByUser = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch uploads" });
   }
 };
+
 
 
 

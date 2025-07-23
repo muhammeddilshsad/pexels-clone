@@ -23,7 +23,9 @@ export const serchVideo = createAsyncThunk("video/serchVideo", async (searchQuer
     console.error( error);
     throw error;
   }
+  
 });
+
 
 export const handleVideoSubmit = createAsyncThunk("videos/upload", async (payload) => {
   console.log('nihal',payload);

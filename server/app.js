@@ -7,7 +7,7 @@ import http from "http";
 import authRouter from "./src/routes/authRouter.js";
 import imageRoute from "./src/routes/imageRouter.js";
 import FollowRoute from "./src/routes/FollowRouter.js";
-import notificationRoute from "./src/routes/FollowRouter.js"; 
+ 
 
 dotenv.config();
 const app = express();
@@ -15,12 +15,12 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: "http://localhost:5173",
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
   },
 });
 
-app.set("io", io); // Make Socket.IO accessible to routes
+app.set("io", io); 
 
 io.on("connection", (socket) => {
   console.log("A user connected:", socket.id);
@@ -36,6 +36,7 @@ io.on("connection", (socket) => {
 app.use(
   cors({
     origin: "http://localhost:5173",
+    
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
   })
@@ -53,6 +54,6 @@ mongoose
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.error(err));
 
-server.listen(process.env.PORT, () => {
+server.listen(process.env.PORT || 5000, () => {
   console.log(`Server is running on port ${process.env.PORT}`);
 });

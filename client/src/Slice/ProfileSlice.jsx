@@ -10,8 +10,8 @@ export const updateProfile = createAsyncThunk("profile/updateProfile",async (for
           },
         });
   
-        
         localStorage.setItem("user", JSON.stringify(res.data.user));
+
   
         return res.data;
       } catch (error) {

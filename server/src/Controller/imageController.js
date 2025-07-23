@@ -29,7 +29,7 @@ export const serchImage = async (req, res) => {
     const images = await Image.find({
       $or: [
         { title: { $regex: query, $options: "i" } },
-        { category: { $regex: query, $options: "i" } },
+        // { category: { $regex: query, $options: "i" } },
       ],
     });
 

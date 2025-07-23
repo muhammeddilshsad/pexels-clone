@@ -2,7 +2,7 @@ import { Download, Heart } from "lucide-react";
 import React, { useState } from "react";
 
 function MasnoryGrid({ images, onclick }) {
-  const [imageHeights, setImageHeights] = useState({});
+  const [ setImageHeights] = useState({});
 
   const handleImageLoad = (imageId, height) => {
     setImageHeights((prev) => ({ ...prev, [imageId]: height }));

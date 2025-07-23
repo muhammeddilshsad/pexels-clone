@@ -10,8 +10,6 @@ const UserDetails = () => {
   
   const { user, loading, error } = useSelector((state) => state.follow || {});
   
-
-
   useEffect(() => {
     if (id) {
       dispatch(getUserDetails(id));
@@ -29,12 +27,11 @@ const UserDetails = () => {
           <p><strong>Name:</strong> {user.name}</p>
           <p><strong>Email:</strong> {user.email}</p>
           <p><strong>Role:</strong> {user.role}</p>
-
-
-        
         </div>
       ) : (
+
         <p>No user found.</p>
+        
       )}
     </div>
   );

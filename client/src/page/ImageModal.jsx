@@ -1,17 +1,17 @@
 import { Download, Heart } from "lucide-react";
 import React, { useState } from "react";
 
-function MasnoryModal({ image, onClose }) {
-  const [liked, setLiked] = useState(false);
-  const [likesCount, setLikesCount] = useState(0);
+ function MasnoryModal({ image, onClose }) {
+   const [liked, setLiked] = useState(false);
+   const [likesCount, setLikesCount] = useState(0);
   
-  const handleDownload = async (image) => {
-    try {
-      const response = await fetch(image.imageUrl, {
-        mode: "cors",
-      });
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
+   const handleDownload = async (image) => {
+     try {
+       const response = await fetch(image.imageUrl, {
+         mode: "cors",
+       });
+       const blob = await response.blob();
+       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
       link.setAttribute("download", `${image.title || "pexels-image"}.jpg`);

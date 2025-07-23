@@ -7,7 +7,8 @@ import { ChevronDown } from 'lucide-react';
 import PexelsNavbar from './navbar';
 
 function Collections() {
-    const navigate = useNavigate();
+
+  
     const dispatch = useDispatch();
     const [selectedImage, setSelectedImage] = useState(null);
 
