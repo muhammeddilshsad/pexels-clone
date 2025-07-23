@@ -23,7 +23,7 @@ import io from "socket.io-client";
 import { toast } from "react-toastify";
 import { debounce } from "lodash";
 
-const socket = io("http://localhost:5000", { transports: ["websocket"], withCredentials: true });
+const socket = io(import.meta.env.VITE_SOCKET_URL, { transports: ["websocket"], withCredentials: true });
 
 export default function PexelsHomepage() {
   const [searchQuery, setSearchQuery] = useState("");
