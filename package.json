@@ -1,5 +1,23 @@
 {
   "dependencies": {
     "socket.io-client": "^4.8.1"
-  }
+  },
+  "name": "pexels.com",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/muhammeddilshsad/pexels-clone.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/muhammeddilshsad/pexels-clone/issues"
+  },
+  "homepage": "https://github.com/muhammeddilshsad/pexels-clone#readme"
 }
