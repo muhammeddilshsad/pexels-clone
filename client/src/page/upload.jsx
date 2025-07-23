@@ -1,3 +1,4 @@
+
 import { Upload, Trash2, ChevronDown, Image, Video } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -123,69 +124,69 @@ const MediaUpload = ({ type = "image" }) => {
   return (
     <>
       <Mynavbar />
-      <div className="min-h-full bg-gray-50 flex justify-center p-6">
-        <div className="w-full max-w-2xl bg-white rounded-2xl shadow-sm p-8">
-          <div className="text-center mb-12">
-            <h1 className="text-3xl font-medium text-gray-900 mb-4">
+      <div className="min-h-full bg-gray-50 flex justify-center p-3 sm:p-6">
+        <div className="w-full max-w-2xl bg-white rounded-2xl shadow-sm p-4 sm:p-6 lg:p-8">
+          <div className="text-center mb-8 sm:mb-12">
+            <h1 className="text-2xl sm:text-3xl font-medium text-gray-900 mb-3 sm:mb-4 leading-tight">
               Share your {isVideo ? "videos" : "photos"} and videos, and let the
               world love them.
             </h1>
-            <p className="text-gray-600 text-lg">
+            <p className="text-gray-600 text-base sm:text-lg px-2 sm:px-0">
               Share your first 50 {isVideo ? "videos" : "photos"} or videos to
               introduce yourself to millions of users.
             </p>
-            <div className="text-right mt-4">
+            <div className="text-right mt-3 sm:mt-4">
               <span className="text-gray-400 text-sm">({uploadCount}/50)</span>
             </div>
           </div>
 
           {/* Upload Area */}
-          <div className="mb-8">
+          <div className="mb-6 sm:mb-8">
             {filePreview ? (
-              <div className="relative mb-6">
+              <div className="relative mb-4 sm:mb-6">
                 {isVideo ? (
                   <video
                     src={filePreview}
                     controls
-                    className="w-full h-64 object-cover rounded-xl shadow-sm"
+                    className="w-full h-48 sm:h-64 object-cover rounded-xl shadow-sm"
                   />
                 ) : (
                   <img
                     src={filePreview}
                     alt="Preview"
-                    className="w-full h-64 object-cover rounded-xl shadow-sm"
+                    className="w-full h-48 sm:h-64 object-cover rounded-xl shadow-sm"
                   />
                 )}
                 <button
                   onClick={removeFile}
-                  className="absolute top-3 right-3 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors shadow-lg"
+                  className="absolute top-2 sm:top-3 right-2 sm:right-3 bg-red-500 text-white p-1.5 sm:p-2 rounded-full hover:bg-red-600 transition-colors shadow-lg"
                 >
-                  <Trash2 size={16} />
+                  <Trash2 size={14} className="sm:w-4 sm:h-4" />
                 </button>
               </div>
             ) : (
-              <div className="text-center mb-6">
-                <div className="flex justify-center mb-6">
-                  <div className="flex space-x-2">
-                    <div className="w-16 h-16 bg-green-100 rounded-xl flex items-center justify-center">
-                      <Image className="text-green-500" size={24} />
+              <div className="text-center mb-4 sm:mb-6">
+                <div className="flex justify-center mb-4 sm:mb-6">
+                  <div className="flex space-x-1 sm:space-x-2">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-green-100 rounded-xl flex items-center justify-center">
+                      <Image className="text-green-500" size={18} />
                     </div>
-                    <div className="w-20 h-16 bg-green-200 rounded-xl flex items-center justify-center">
-                      <Image className="text-green-600" size={28} />
+                    <div className="w-16 h-12 sm:w-20 sm:h-16 bg-green-200 rounded-xl flex items-center justify-center">
+                      <Image className="text-green-600" size={20} />
                     </div>
-                    <div className="w-16 h-16 bg-green-100 rounded-xl flex items-center justify-center">
-                      <Video className="text-green-500" size={24} />
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-green-100 rounded-xl flex items-center justify-center">
+                      <Video className="text-green-500" size={18} />
                     </div>
                   </div>
                 </div>
 
-                <h2 className="text-2xl font-medium text-gray-900 mb-2">
+                <h2 className="text-xl sm:text-2xl font-medium text-gray-900 mb-2">
                   Drag and drop
                 </h2>
-                <p className="text-xl text-gray-900 mb-6">to upload, or</p>
+                <p className="text-lg sm:text-xl text-gray-900 mb-4 sm:mb-6">to upload, or</p>
 
                 <label
-                  className={`relative block w-full h-32 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-200 ${
+                  className={`relative block w-full h-28 sm:h-32 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-200 ${
                     isDragOver
                       ? "border-green-400 bg-green-50"
                       : "border-gray-300 hover:border-green-400 hover:bg-green-50"
@@ -194,14 +195,14 @@ const MediaUpload = ({ type = "image" }) => {
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
                 >
-                  <div className="flex flex-col items-center justify-center h-full">
+                  <div className="flex flex-col items-center justify-center h-full px-4">
                     <button
                       type="button"
-                      className="bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-xl font-medium transition-colors"
+                      className="bg-green-500 hover:bg-green-600 text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-xl font-medium transition-colors text-sm sm:text-base"
                     >
                       Browse
                     </button>
-                    <p className="text-gray-500 text-sm mt-2">
+                    <p className="text-gray-500 text-xs sm:text-sm mt-2 text-center">
                       {isVideo
                         ? "MP4, MOV up to 100MB"
                         : "JPG, PNG, GIF up to 10MB"}
@@ -219,13 +220,13 @@ const MediaUpload = ({ type = "image" }) => {
           </div>
 
           {(filePreview || file) && (
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               <input
                 type="text"
                 placeholder="Enter title"
                 value={formData.title}
                 onChange={(e) => handleInputChange("title", e.target.value)}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none focus:border-green-400 focus:ring-2 focus:ring-green-100 transition-all"
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-200 rounded-xl outline-none focus:border-green-400 focus:ring-2 focus:ring-green-100 transition-all text-sm sm:text-base"
               />
 
               <input
@@ -233,17 +234,17 @@ const MediaUpload = ({ type = "image" }) => {
                 placeholder="Tags"
                 value={formData.category}
                 onChange={(e) => handleInputChange("category", e.target.value)}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none focus:border-green-400 focus:ring-2 focus:ring-green-100 transition-all"
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-200 rounded-xl outline-none focus:border-green-400 focus:ring-2 focus:ring-green-100 transition-all text-sm sm:text-base"
               />
 
               <input
                 type="text"
-                placeholder="Loaction"
+                placeholder="Location"
                 value={formData.photographer}
                 onChange={(e) =>
                   handleInputChange("photographer", e.target.value)
                 }
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none focus:border-green-400 focus:ring-2 focus:ring-green-100 transition-all"
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-200 rounded-xl outline-none focus:border-green-400 focus:ring-2 focus:ring-green-100 transition-all text-sm sm:text-base"
               />
 
               <div className="relative">
@@ -252,7 +253,7 @@ const MediaUpload = ({ type = "image" }) => {
                   onClick={() =>
                     setShowChallengesDropdown(!showChallengesDropdown)
                   }
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white flex justify-between items-center focus:border-green-400 focus:ring-2 focus:ring-green-100 transition-all"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-200 rounded-xl bg-white flex justify-between items-center focus:border-green-400 focus:ring-2 focus:ring-green-100 transition-all text-sm sm:text-base"
                 >
                   <span
                     className={
@@ -261,7 +262,7 @@ const MediaUpload = ({ type = "image" }) => {
                   >
                     {formData.challenges || "Select challenges"}
                   </span>
-                  <ChevronDown size={16} className="text-gray-400" />
+                  <ChevronDown size={14} className="sm:w-4 sm:h-4 text-gray-400" />
                 </button>
 
                 {showChallengesDropdown && (
@@ -270,7 +271,7 @@ const MediaUpload = ({ type = "image" }) => {
                       <button
                         key={item}
                         onClick={() => handleChallengeSelect(item)}
-                        className="w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors first:rounded-t-xl last:rounded-b-xl"
+                        className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-left hover:bg-gray-50 transition-colors first:rounded-t-xl last:rounded-b-xl text-sm sm:text-base"
                       >
                         {item}
                       </button>
@@ -281,7 +282,7 @@ const MediaUpload = ({ type = "image" }) => {
 
               <button
                 onClick={handleSubmit}
-                className="w-full bg-green-500 hover:bg-green-600 text-white py-4 px-6 rounded-xl font-medium transition-colors text-lg"
+                className="w-full bg-green-500 hover:bg-green-600 text-white py-3 sm:py-4 px-4 sm:px-6 rounded-xl font-medium transition-colors text-base sm:text-lg"
               >
                 Submit {isVideo ? "Video" : "Image"}
               </button>
